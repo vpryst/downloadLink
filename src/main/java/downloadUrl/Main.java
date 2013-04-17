@@ -18,25 +18,10 @@ public class Main {
      * @param args
      */
     public static void main(String[] args) {
-        FileOutputStream fileOutput = null;
-        String temp = "";
-        //HashMap <String, String> Links = new HashMap<String, String>(); 
-        HashSet<String> Links = new HashSet<String>();
         
-        try {
-            fileOutput = new FileOutputStream("temp.html");
-        } catch (FileNotFoundException e1) {
-            e1.printStackTrace();
-        }
-        OutputStreamWriter outputWriter = new OutputStreamWriter(fileOutput);
-        BufferedWriter bufferWriter = new BufferedWriter(outputWriter);
-        BufferedReader bufferReader;
-        String getReadLine;
-
-        ConnectionUrl con = new ConnectionUrl();
         //bufferReader = con.setUrl("");
-
-        try {
+        WriteFile files = new WriteFile();
+        
           /*  while ((getReadLine = bufferReader.readLine()) != null) {
                 if (getReadLine.indexOf("form_build_id") >= 0) {
                     System.out.println(getReadLine);
@@ -52,31 +37,7 @@ public class Main {
 
             
 
-            bufferReader = con.setAutentificate(temp);
             
-            
-            bufferReader = con.setUrl("http://refcardz.dzone.com");
-            while ((getReadLine = bufferReader.readLine()) != null) {
-                int from, to;
-                if ((from = getReadLine.indexOf("/assets/request")) >= 0) {
-                    to = getReadLine.indexOf("direct=true")+11;
-                    System.out.println(getReadLine);
-                    System.out.println(from + " " + to);
-                    System.out.println(getReadLine.substring(from, to));
-                    Links.add(getReadLine.substring(from, to));
-                }
-                bufferWriter.write(getReadLine);
-                bufferWriter.newLine();
-            }
-            Iterator <String> it = Links.iterator(); 
-            while (it.next()!=null) {
-                con.getLink(it.next());
-            }
-            
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        con.setManagerShutDown();
     }
 
 }
