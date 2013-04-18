@@ -55,10 +55,6 @@ public class ConnectionUrl {
     private BufferedReader bufferedDataReader;
 
     public ConnectionUrl() {
-     // set the connection timeout value to 30 seconds (30000 milliseconds)
-        /*final HttpParams httpParams = new BasicHttpParams();
-        HttpConnectionParams.setConnectionTimeout(httpParams, 30000);
-        httpclient = new DefaultHttpClient(httpParams);*/
         httpclient = new DefaultHttpClient();
         
         //httpclient.getParams().setParameter(ClientPNames.COOKIE_POLICY, CookiePolicy.ACCEPT_ALL);
