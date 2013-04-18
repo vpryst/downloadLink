@@ -57,15 +57,6 @@ public class ConnectionUrl {
     public ConnectionUrl() {
         httpclient = new DefaultHttpClient();
         
-        //httpclient.getParams().setParameter(ClientPNames.COOKIE_POLICY, CookiePolicy.ACCEPT_ALL);
-        
-        
-        
-        /*
-         * httpclient.getCredentialsProvider().setCredentials(new AuthScope(Url, 8080), new UsernamePasswordCredentials(DEFAULT_USER,
-         * DEFAULT_PASSWORD)); System.out.println(httpclient.getCredentialsProvider());
-         */
-        // setUrl("");
     }
 
     public BufferedReader setUrl(String URL, int i, String tmp) {
