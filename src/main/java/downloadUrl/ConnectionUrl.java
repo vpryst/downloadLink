@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
+import java.lang.Character.UnicodeBlock;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -34,183 +35,137 @@ public class ConnectionUrl {
     private HttpGet httpget;
     private HttpPost post;
 
-    private CloseableHttpResponse response;
+    private CloseableHttpResponse responseAutentificate;
+    private CloseableHttpResponse responseGetData;
     private InputStreamReader inputDataStream = null;
     private BufferedReader bufferedDataReader;
-    
+
     private FileOutputStream fileOutput = null;
     private OutputStreamWriter outputWriter;
-	private BufferedWriter bufferWriter;
+    private BufferedWriter bufferWriter;
 
     public ConnectionUrl() {
         httpclient = HttpClients.createDefault();
-        
+
     }
 
     public HashSet<String> getUrlLink() {
         try {
-            httpget = new HttpGet(Url);
-            httpget.addHeader("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:20.0) Gecko/20100101 Firefox/20.0");
+            try {
+                httpget = new HttpGet(Url);
+                responseGetData = httpclient.execute(httpget);
 
-            httpget.setHeader("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
-            httpget.setHeader("Accept-Encoding", "gzip, deflate");
-            httpget.setHeader("Accept-Language", "en-US,en;q=0.5");
-            httpget.setHeader("Connection", "keep-alive");
-            httpget.setHeader("Cookie", "SESS374e8db54ec3033c25a586b1d093b1d1=41074f579f0e5qrk2779cm6hc6; wooTracker=eAXwv3gwJmHB; optimizelySegments=%7B%22177785857%22%3A%22false%22%2C%22177840837%22%3A%22referral%22%2C%22177932055%22%3A%22ff%22%7D; optimizelyBuckets=%7B%7D; __gads=ID=0dad8d4e950aa499:T=1364226981:S=ALNI_MZY1wXvyKfGlsamR8q3i9dbAH5pnw; __utma=62263603.1845300023.1366277245.1366277245.1366277245.1; __utmz=62263603.1366277245.1.1.utmcsr=(direct)|utmccn=(direct)|utmcmd=(none); __utma=82130581.994355443.1366036523.1366277255.1366280411.14; __utmz=82130581.1366277255.13.4.utmcsr=dzone.com|utmccn=(referral)|utmcmd=referral|utmcct=/links/index.html; dzexpresstoken=MTEzNTI4MTEwMTgxNDBkODMyMjVi; optimizelyEndUserId=oeu1366116268884r0.5976859505777073; linkedin_oauth_m0tctekctvmc_crc=null; __utmc=62263603; __utmc=82130581; has_js=1; ACEGI_SECURITY_HASHED_REMEMBER_ME_COOKIE=Anonim123%21v3%212013652828; __utmb=82130581.1.10.1366280411");
-            httpget.setHeader("Host", "refcardz.dzone.com");
-            httpget.setHeader("If-Modified-Since", "Thu, 18 Apr 2013 10:36:52 GMT");
-            httpget.setHeader("Proxy-Authorization", "NTLM TlRMTVNTUAADAAAAGAAYAIAAAAAoASgBmAAAABIAEgBYAAAADAAMAGoAAAAKAAoAdgAAAAAAAADAAQAABYKIogYBsR0AAAAPDAFpVl/U57tkrE6Vep43HFMATwBGAFQAUwBFAFIAVgBFAHYAcAByAHkAcwB0AEkARgAwADMAMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABsZkJnTG7QASLRrUBuDZZuAQEAAAAAAADaLkjxIDzOATN3iCEr62ABAAAAAAIAEgBTAE8ARgBUAFMARQBSAFYARQABAAwAUABSAE8AWABZADEABAAgAHMAbwBmAHQAcwBlAHIAdgBlAGMAbwBtAC4AYwBvAG0AAwAsAHAAcgBvAHgAeQAuAHMAbwBmAHQAcwBlAHIAdgBlAGMAbwBtAC4AYwBvAG0ACAAwADAAAAAAAAAAAAAAAAAwAACj0PmSbOtyPsKb7MAQzbegZvXS1FOxjPhFrtzWFVcRbQoAEAAAAAAAAAAAAAAAAAAAAAAACQAuAEgAVABUAFAALwByAGUAZgBjAGEAcgBkAHoALgBkAHoAbwBuAGUALgBjAG8AbQAAAAAAAAAAAA==");
-            httpget.setHeader("Referer", "http://refcardz.dzone.com/");
-            httpget.setHeader("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:20.0) Gecko/20100101 Firefox/20.0");  
-            
-              
-                     
-              
-                 
-                 
-            
-            
-            response = httpclient.execute(httpget);
-            //System.out.println(response.);
-            
-            System.out.println(Url);
-            System.out.println(httpget.getRequestLine());
-            System.out.println(httpget.getURI());
-            System.out.println("HTTP HEADS");
-            Header [] heds = httpget.getAllHeaders();
-            for (Header hr : heds) {
-                System.out.println("Name: " + hr.getName() + "     Value: " + hr.getValue());
+                System.out.println(Url);
+                System.out.println(httpget.getRequestLine());
+                System.out.println(httpget.getURI());
+                System.out.println("HTTP HEADS");
+                Header[] heds = httpget.getAllHeaders();
+                for (Header hr : heds) {
+                    System.out.println("Name: " + hr.getName() + "     Value: " + hr.getValue());
+                }
+                System.out.println("Response HEADS");
+                Header[] headers = responseGetData.getAllHeaders();
+                for (Header hr : headers) {
+                    System.out.println("Name: " + hr.getName() + "     Value: " + hr.getValue());
+                }
+                inputDataStream = new InputStreamReader(responseGetData.getEntity().getContent());
+
+                bufferedDataReader = new BufferedReader(inputDataStream);
+
+                while ((getReadLine = bufferedDataReader.readLine()) != null) {
+                    int from, to;
+                    if ((from = getReadLine.indexOf("/assets/request")) >= 0) {
+                        to = getReadLine.indexOf("direct=true") + 11;
+                        System.out.println(getReadLine);
+                        System.out.println(from + " " + to);
+                        System.out.println(getReadLine.substring(from, to));
+                        links.add(Url + getReadLine.substring(from, to));
+                    }
+                    // System.out.println(getReadLine);
+                }
+            } finally {
+                EntityUtils.consume(responseGetData.getEntity());
+                responseGetData.close();
             }
-            System.out.println("Response HEADS");
-            Header [] headers = response.getAllHeaders();
-            for (Header hr : headers) {
-                System.out.println("Name: " + hr.getName() + "     Value: " + hr.getValue());
-            }
-            inputDataStream = new InputStreamReader(response.getEntity().getContent());
+
         } catch (IOException e) {
             e.printStackTrace();
         }
-        bufferedDataReader = new BufferedReader(inputDataStream);
-        try {
-			while ((getReadLine = bufferedDataReader.readLine()) != null) {
-				int from, to;
-				if ((from = getReadLine.indexOf("/assets/request")) >= 0) {
-					to = getReadLine.indexOf("direct=true") + 11;
-					System.out.println(getReadLine);
-					System.out.println(from + " " + to);
-					System.out.println(getReadLine.substring(from, to));
-					links.add(getReadLine.substring(from, to));
-				}
-				System.out.println(getReadLine);
-			}
-
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-        try {
-        	EntityUtils.consume(response.getEntity());
-			response.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
         return links;
     }
-    
-    public void saveFiles (String URL, String fileName) {
-    	try {
-            httpget = new HttpGet(URL);
-            //httpget.getParams().setParameter(ClientPNames.COOKIE_POLICY, CookiePolicy.ACCEPT_ALL);
-            httpget.addHeader("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:20.0) Gecko/20100101 Firefox/20.0");
-            
-            httpget.setHeader("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
-            httpget.setHeader("Accept-Encoding", "gzip, deflate");
-            httpget.setHeader("Accept-Language", "en-US,en;q=0.5");
-            httpget.setHeader("Connection", "keep-alive");
-            httpget.setHeader("Cookie", "SESS374e8db54ec3033c25a586b1d093b1d1=41074f579f0e5qrk2779cm6hc6; wooTracker=eAXwv3gwJmHB; optimizelySegments=%7B%22177785857%22%3A%22false%22%2C%22177840837%22%3A%22referral%22%2C%22177932055%22%3A%22ff%22%7D; optimizelyBuckets=%7B%7D; __gads=ID=0dad8d4e950aa499:T=1364226981:S=ALNI_MZY1wXvyKfGlsamR8q3i9dbAH5pnw; __utma=62263603.1845300023.1366277245.1366277245.1366277245.1; __utmz=62263603.1366277245.1.1.utmcsr=(direct)|utmccn=(direct)|utmcmd=(none); __utma=82130581.994355443.1366036523.1366277255.1366280411.14; __utmz=82130581.1366277255.13.4.utmcsr=dzone.com|utmccn=(referral)|utmcmd=referral|utmcct=/links/index.html; dzexpresstoken=MTEzNTI4MTEwMTgxNDBkODMyMjVi; optimizelyEndUserId=oeu1366116268884r0.5976859505777073; linkedin_oauth_m0tctekctvmc_crc=null; __utmc=62263603; __utmc=82130581; has_js=1; ACEGI_SECURITY_HASHED_REMEMBER_ME_COOKIE=Anonim123%21v3%212013652828; __utmb=82130581.1.10.1366280411");
-            httpget.setHeader("Host", "refcardz.dzone.com");
-            httpget.setHeader("If-Modified-Since", "Thu, 18 Apr 2013 10:36:52 GMT");
-            httpget.setHeader("Proxy-Authorization", "NTLM TlRMTVNTUAADAAAAGAAYAIAAAAAoASgBmAAAABIAEgBYAAAADAAMAGoAAAAKAAoAdgAAAAAAAADAAQAABYKIogYBsR0AAAAPDAFpVl/U57tkrE6Vep43HFMATwBGAFQAUwBFAFIAVgBFAHYAcAByAHkAcwB0AEkARgAwADMAMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABsZkJnTG7QASLRrUBuDZZuAQEAAAAAAADaLkjxIDzOATN3iCEr62ABAAAAAAIAEgBTAE8ARgBUAFMARQBSAFYARQABAAwAUABSAE8AWABZADEABAAgAHMAbwBmAHQAcwBlAHIAdgBlAGMAbwBtAC4AYwBvAG0AAwAsAHAAcgBvAHgAeQAuAHMAbwBmAHQAcwBlAHIAdgBlAGMAbwBtAC4AYwBvAG0ACAAwADAAAAAAAAAAAAAAAAAwAACj0PmSbOtyPsKb7MAQzbegZvXS1FOxjPhFrtzWFVcRbQoAEAAAAAAAAAAAAAAAAAAAAAAACQAuAEgAVABUAFAALwByAGUAZgBjAGEAcgBkAHoALgBkAHoAbwBuAGUALgBjAG8AbQAAAAAAAAAAAA==");
-            httpget.setHeader("Referer", "http://refcardz.dzone.com/");
-            httpget.setHeader("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:20.0) Gecko/20100101 Firefox/20.0");  
-                    
-            
-              
-                     
-              
-                 
-                 
-            
-            
-            response = httpclient.execute(httpget);
-            //System.out.println(response.);
-            
-            System.out.println(URL);
-            System.out.println(httpget.getRequestLine());
-            System.out.println(httpget.getURI());
-            System.out.println("HTTP HEADS");
-            Header [] heds = httpget.getAllHeaders();
-            for (Header hr : heds) {
-                System.out.println("Name: " + hr.getName() + "     Value: " + hr.getValue());
+
+    public void saveFiles(String URL, String fileName) {
+        try {
+            try {
+                httpget = new HttpGet(URL);
+
+                responseGetData = httpclient.execute(httpget);
+                int tmp;
+                String extention = "";
+
+                System.out.println(URL);
+                System.out.println(httpget.getRequestLine());
+                System.out.println(httpget.getURI());
+                System.out.println("HTTP HEADS");
+                Header[] heds = httpget.getAllHeaders();
+                for (Header hr : heds) {
+                    System.out.println("Name: " + hr.getName() + "     Value: " + hr.getValue());
+                }
+                System.out.println("Response HEADS");
+                Header[] headers = responseGetData.getAllHeaders();
+                for (Header hr : headers) {
+                    System.out.println("Name: " + hr.getName() + "     Value: " + hr.getValue() + "*");
+                }
+                if (responseGetData.getFirstHeader("Content-Type") != null &&
+                    responseGetData.getFirstHeader("Content-Type").getValue().indexOf("application/pdf") >= 0) {
+                    extention = ".pdf";
+                } else {
+                    extention = ".html";
+                }
+                inputDataStream = new InputStreamReader(responseGetData.getEntity().getContent());
+                bufferedDataReader = new BufferedReader(inputDataStream);
+
+                fileOutput = new FileOutputStream(fileName + extention);
+                outputWriter = new OutputStreamWriter(fileOutput);
+                bufferWriter = new BufferedWriter(outputWriter);
+                System.out.println("Check before while");
+                while ((tmp = bufferedDataReader.read()) != -1) {
+                    bufferWriter.write(tmp);
+                }
+            } finally {
+                bufferedDataReader.close();
+                inputDataStream.close();
+
+                bufferWriter.close();
+                outputWriter.close();
+                fileOutput.close();
+
+                EntityUtils.consume(responseGetData.getEntity());
+                responseGetData.close();
             }
-            System.out.println("Response HEADS");
-            Header [] headers = response.getAllHeaders();
-            for (Header hr : headers) {
-                System.out.println("Name: " + hr.getName() + "     Value: " + hr.getValue());
-            }
-            inputDataStream = new InputStreamReader(response.getEntity().getContent());
         } catch (IOException e) {
             e.printStackTrace();
         }
-        bufferedDataReader = new BufferedReader(inputDataStream);
-        try {
-			fileOutput = new FileOutputStream(fileName);
-			outputWriter = new OutputStreamWriter(fileOutput);
-			bufferWriter = new BufferedWriter(outputWriter);
-			while ((getReadLine = bufferedDataReader.readLine()) != null) {
-				bufferWriter.write(getReadLine);
-				bufferWriter.newLine();
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-        try {
-        	EntityUtils.consume(response.getEntity());
-			response.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
     }
 
     public void setAutentificate() {
         post = new HttpPost("http://refcardz.dzone.com/user/");
-		/*
-		 * post.addHeader("name", "Anonim123"); post.addHeader("pass", "123456"); post.addHeader("form_build_id", sum);
-		 * post.addHeader("form_id", "user_login"); post.addHeader("op", "Log+in");
-		 */
-
-		List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
-		nameValuePairs.add(new BasicNameValuePair("name", "Anonim123"));
-		nameValuePairs.add(new BasicNameValuePair("pass", "123456"));
-		// nameValuePairs.add(new BasicNameValuePair("form_build_id", ""));
-		nameValuePairs.add(new BasicNameValuePair("form_id", "user_login"));
-		// nameValuePairs.add(new BasicNameValuePair("op", "Log+in"));
-		try {
-		    post.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-		} catch (UnsupportedEncodingException e) {
-		    e.printStackTrace();
-		}
+        List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
+        nameValuePairs.add(new BasicNameValuePair("name", "Anonim123"));
+        nameValuePairs.add(new BasicNameValuePair("pass", "123456"));
+        nameValuePairs.add(new BasicNameValuePair("form_id", "user_login"));
         try {
-            response = httpclient.execute(post);
-            System.out.println(response.getStatusLine());
+            try {
+                post.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+                responseAutentificate = httpclient.execute(post);
+                System.out.println(responseAutentificate.getStatusLine());
+            } finally {
+                EntityUtils.consume(responseAutentificate.getEntity());
+                responseAutentificate.close();
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
-        try {
-        	EntityUtils.consume(response.getEntity());
-			response.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
     }
 
     public void setManagerShutDown() {
