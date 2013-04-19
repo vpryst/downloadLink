@@ -6,13 +6,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
-import java.lang.Character.UnicodeBlock;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
-import org.apache.http.Header;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -23,17 +20,17 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 
+/*
+ * This class provide connection to web page take, links and can save files. 
+ */
 public class ConnectionUrl {
 
-    private final String DEFAULT_USER = "Anonim123";
-    private final String DEFAULT_PASSWORD = "123456";
-    public static final String Url = "http://refcardz.dzone.com";
-    private String getReadLine;
+    private String readLine = "";
     private HashSet<String> links = new HashSet<String>();
 
-    private CloseableHttpClient httpclient;
-    private HttpGet httpget;
-    private HttpPost post;
+    private CloseableHttpClient httpClient;
+    private HttpGet httpGet;
+    private HttpPost httpPost;
 
     private CloseableHttpResponse responseAutentificate;
     private CloseableHttpResponse responseGetData;
@@ -43,79 +40,49 @@ public class ConnectionUrl {
     private FileOutputStream fileOutput = null;
     private OutputStreamWriter outputWriter;
     private BufferedWriter bufferWriter;
-
+    
     public ConnectionUrl() {
-        httpclient = HttpClients.createDefault();
+        httpClient = HttpClients.createDefault();
 
     }
 
-    public HashSet<String> getUrlLink() {
+    /*
+     * This method take Links from provided Url. And return Map of Links
+     */
+    public HashSet<String> getUrlLink(String URL) {
         try {
             try {
-                httpget = new HttpGet(Url);
-                responseGetData = httpclient.execute(httpget);
-
-                System.out.println(Url);
-                System.out.println(httpget.getRequestLine());
-                System.out.println(httpget.getURI());
-                System.out.println("HTTP HEADS");
-                Header[] heds = httpget.getAllHeaders();
-                for (Header hr : heds) {
-                    System.out.println("Name: " + hr.getName() + "     Value: " + hr.getValue());
-                }
-                System.out.println("Response HEADS");
-                Header[] headers = responseGetData.getAllHeaders();
-                for (Header hr : headers) {
-                    System.out.println("Name: " + hr.getName() + "     Value: " + hr.getValue());
-                }
+                httpGet = new HttpGet(URL);
+                responseGetData = httpClient.execute(httpGet);
                 inputDataStream = new InputStreamReader(responseGetData.getEntity().getContent());
-
                 bufferedDataReader = new BufferedReader(inputDataStream);
-
-                while ((getReadLine = bufferedDataReader.readLine()) != null) {
+                while ((readLine = bufferedDataReader.readLine()) != null) {
                     int from, to;
-                    if ((from = getReadLine.indexOf("/assets/request")) >= 0) {
-                        to = getReadLine.indexOf("direct=true") + 11;
-                        System.out.println(getReadLine);
-                        System.out.println(from + " " + to);
-                        System.out.println(getReadLine.substring(from, to));
-                        links.add(Url + getReadLine.substring(from, to));
+                    if ((from = readLine.indexOf("/assets/request")) >= 0) {
+                        to = readLine.indexOf("direct=true") + 11;
+                        links.add(URL + readLine.substring(from, to));
                     }
-                    // System.out.println(getReadLine);
                 }
             } finally {
                 EntityUtils.consume(responseGetData.getEntity());
                 responseGetData.close();
             }
-
         } catch (IOException e) {
             e.printStackTrace();
         }
         return links;
     }
 
+    /*
+     * Mathod save files from link, and set name of file. Extention set from response header
+     */
     public void saveFiles(String URL, String fileName) {
         try {
             try {
-                httpget = new HttpGet(URL);
-
-                responseGetData = httpclient.execute(httpget);
+                httpGet = new HttpGet(URL);
+                responseGetData = httpClient.execute(httpGet);
                 int tmp;
                 String extention = "";
-
-                System.out.println(URL);
-                System.out.println(httpget.getRequestLine());
-                System.out.println(httpget.getURI());
-                System.out.println("HTTP HEADS");
-                Header[] heds = httpget.getAllHeaders();
-                for (Header hr : heds) {
-                    System.out.println("Name: " + hr.getName() + "     Value: " + hr.getValue());
-                }
-                System.out.println("Response HEADS");
-                Header[] headers = responseGetData.getAllHeaders();
-                for (Header hr : headers) {
-                    System.out.println("Name: " + hr.getName() + "     Value: " + hr.getValue() + "*");
-                }
                 if (responseGetData.getFirstHeader("Content-Type") != null &&
                     responseGetData.getFirstHeader("Content-Type").getValue().indexOf("application/pdf") >= 0) {
                     extention = ".pdf";
@@ -124,18 +91,15 @@ public class ConnectionUrl {
                 }
                 inputDataStream = new InputStreamReader(responseGetData.getEntity().getContent());
                 bufferedDataReader = new BufferedReader(inputDataStream);
-
                 fileOutput = new FileOutputStream(fileName + extention);
                 outputWriter = new OutputStreamWriter(fileOutput);
                 bufferWriter = new BufferedWriter(outputWriter);
-                System.out.println("Check before while");
                 while ((tmp = bufferedDataReader.read()) != -1) {
                     bufferWriter.write(tmp);
                 }
             } finally {
                 bufferedDataReader.close();
                 inputDataStream.close();
-
                 bufferWriter.close();
                 outputWriter.close();
                 fileOutput.close();
@@ -148,16 +112,19 @@ public class ConnectionUrl {
         }
     }
 
-    public void setAutentificate() {
-        post = new HttpPost("http://refcardz.dzone.com/user/");
+    /*
+     * authentificate user on web page
+     */
+    public void Autentificate(String URL, String loginName, String password) {
+        httpPost = new HttpPost(URL);
         List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
-        nameValuePairs.add(new BasicNameValuePair("name", "Anonim123"));
-        nameValuePairs.add(new BasicNameValuePair("pass", "123456"));
+        nameValuePairs.add(new BasicNameValuePair("name", loginName));
+        nameValuePairs.add(new BasicNameValuePair("pass", password));
         nameValuePairs.add(new BasicNameValuePair("form_id", "user_login"));
         try {
             try {
-                post.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-                responseAutentificate = httpclient.execute(post);
+                httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+                responseAutentificate = httpClient.execute(httpPost);
                 System.out.println(responseAutentificate.getStatusLine());
             } finally {
                 EntityUtils.consume(responseAutentificate.getEntity());
@@ -168,12 +135,15 @@ public class ConnectionUrl {
         }
     }
 
-    public void setManagerShutDown() {
+    /*
+     * Close all connection HttpClient 
+     */
+    public void ManagerShutDown() {
 
         try {
             bufferedDataReader.close();
             inputDataStream.close();
-            httpclient.close();
+            httpClient.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
