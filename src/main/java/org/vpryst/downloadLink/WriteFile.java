@@ -21,9 +21,10 @@ public class WriteFile {
 		 * con.saveFiles(it.next(),String.valueOf(tmp));
 		 * //System.out.println(it.next()); tmp++; }
 		 */
-		LOGGER_WRITE_FILE.info("Start write file");
+		LOGGER_WRITE_FILE.info(Messager.getString("org.vpryst.download.WriteFile.startWritefile"));
 		System.out.println(map.size());
 		// con.saveFiles("http://cdn.dzone.com/sites/all/files/refcardz/rc171-010d-MongoDB_1.pdf","1");
+		LOGGER_WRITE_FILE.info(Messager.getString("org.vpryst.download.WriteFile.endWritefile"));
 		// con.ManagerShutDown();
 	}
 }
