@@ -10,8 +10,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
-import javax.mail.Message;
-
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -23,8 +21,8 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
 
-/*
- * This class provide connection to web page take, links and can save files. 
+/**
+ * This class provide connection to web page take, links and can save files.
  */
 public class ConnectionUrl {
 
@@ -50,14 +48,15 @@ public class ConnectionUrl {
 
     }
 
-    /*
+    /**
      * This method take Links from provided Url. And return Map of Links
-     */
-    public HashSet<String> getUrlLink(String URL) {
+     * @param url
+    **/
+    public HashSet<String> getUrlLink(String url) {
         LOGGER_CONNECTION_URL.info(Messager.getString("org.vpryst.download.getLinks"));
         try {
             try {
-                httpGet = new HttpGet(URL);
+                httpGet = new HttpGet(url);
                 responseGetData = httpClient.execute(httpGet);
                 inputDataStream = new InputStreamReader(responseGetData.getEntity().getContent());
                 bufferedDataReader = new BufferedReader(inputDataStream);
@@ -65,7 +64,7 @@ public class ConnectionUrl {
                     int from, to;
                     if ((from = readLine.indexOf(Messager.getString("org.vpryst.download.takeLinkSubstringFrom"))) >= 0) {
                         to = readLine.indexOf(Messager.getString("org.vpryst.download.takeLinkSubstringTo")) + 11;
-                        links.add(URL + readLine.substring(from, to));
+                        links.add(url + readLine.substring(from, to));
                     }
                 }
             } finally {
@@ -79,14 +78,14 @@ public class ConnectionUrl {
         return links;
     }
 
-    /*
+    /**
      * Mathod save files from link, and set name of file. Extention set from response header
      */
-    public void saveFiles(String URL, String fileName) {
-        LOGGER_CONNECTION_URL.info("Start download file");
+    public void saveFiles(String url, String fileName) {
+        LOGGER_CONNECTION_URL.info(Messager.getString("org.vpryst.download.ConnectionUrl.startDownload"));
         try {
             try {
-                httpGet = new HttpGet(URL);
+                httpGet = new HttpGet(url);
                 responseGetData = httpClient.execute(httpGet);
                 int tmp;
                 String extention = "";
@@ -119,15 +118,15 @@ public class ConnectionUrl {
             // e.printStackTrace();
             LOGGER_CONNECTION_URL.error(e.getMessage());
         }
-        LOGGER_CONNECTION_URL.info("End download file");
+        LOGGER_CONNECTION_URL.info(Messager.getString("org.vpryst.download.ConnectionUrl.endtDownload"));
     }
 
-    /*
+    /**
      * authentificate user on web page
-     */
-    public void Autentificate(String URL, String loginName, String password) {
-        LOGGER_CONNECTION_URL.info("Autentificate");
-        httpPost = new HttpPost(URL);
+    **/
+    public void autentificate(String url, String loginName, String password) {
+        LOGGER_CONNECTION_URL.info(Messager.getString("org.vpryst.download.ConnectionUrl.authenticate"));
+        httpPost = new HttpPost(url);
         List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
         nameValuePairs.add(new BasicNameValuePair("name", loginName));
         nameValuePairs.add(new BasicNameValuePair("pass", password));
@@ -147,10 +146,10 @@ public class ConnectionUrl {
         }
     }
 
-    /*
+    /**
      * Close all connection HttpClient
      */
-    public void ManagerShutDown() {
+    public void managerShutDown() {
 
         try {
             bufferedDataReader.close();
