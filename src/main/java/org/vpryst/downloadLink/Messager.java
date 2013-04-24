@@ -23,13 +23,4 @@ public class Messager {
             return '!' + key + '!';
         }
     }
-
-    /**
-     * @param args
-     */
-    public static void main(String[] args) {
-        // TODO Auto-generated method stub
-        System.out.println(Messager.getString("org.vpryst.download.takeLinkSubstringFrom"));
-    }
-
 }

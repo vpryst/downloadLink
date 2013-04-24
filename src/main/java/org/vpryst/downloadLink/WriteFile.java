@@ -7,7 +7,7 @@ import org.apache.log4j.Logger;
 
 public class WriteFile {
     
-    private final Logger LOGGER_WRITE_FILE = Logger.getLogger(WriteFile.class);
+    private final Logger logger = Logger.getLogger(WriteFile.class);
 	private HashSet<String> map = new HashSet<String>();
 	private Iterator<String> it = null;
 	private int tmp = 1;
@@ -21,10 +21,10 @@ public class WriteFile {
 		 * con.saveFiles(it.next(),String.valueOf(tmp));
 		 * //System.out.println(it.next()); tmp++; }
 		 */
-		LOGGER_WRITE_FILE.info(Messager.getString("org.vpryst.download.WriteFile.startWritefile"));
+		logger.info(Messager.getString("org.vpryst.download.WriteFile.startWritefile"));
 		System.out.println(map.size());
 		// con.saveFiles("http://cdn.dzone.com/sites/all/files/refcardz/rc171-010d-MongoDB_1.pdf","1");
-		LOGGER_WRITE_FILE.info(Messager.getString("org.vpryst.download.WriteFile.endWritefile"));
+		logger.info(Messager.getString("org.vpryst.download.WriteFile.endWritefile"));
 		// con.ManagerShutDown();
 	}
 }

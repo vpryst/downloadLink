@@ -9,7 +9,7 @@ import org.apache.log4j.Logger;
 
 public class CommandsManager {
 
-    private final Logger LOGGER_COMMANDS_MANAGER = Logger.getLogger(CommandsManager.class);
+    private final Logger logger = Logger.getLogger(CommandsManager.class);
 	private String name = "";
 	private String pass = "";
 
@@ -32,7 +32,8 @@ public class CommandsManager {
 			}
 		} catch (ParseException e) {
 			// e.printStackTrace();
-			LOGGER_COMMANDS_MANAGER.error(e.getMessage());
+			logger.error(e.getMessage());
+			
 		}
 	}
 
