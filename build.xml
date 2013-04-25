@@ -3,7 +3,7 @@
 
 	<property file="build.properties" />
 
-	<taskdef resource="checkstyletask.properties" classpath="lib/checkstyle-5.6-all.jar" />
+	<taskdef resource="checkstyletask.properties" classpath="lib/checkstyle-5.6.jar" />
 
 
 	<target name="resolve" description="Resolve and Retrieve with ivy">
@@ -64,5 +64,96 @@
 		</javadoc>
 	</target>
 
+
+
+	<!--taskdef classpath="lib/cobertura-1.9.4.jar" resource="tasks.properties" />
+	<target name="test"-->
+	<!--depends="compile"-->
+	<!--
+	  Generate a series of HTML files containing the coverage
+	  data in a user-readable form using nested source filesets.
+	  -->
+	<!--cobertura-report destdir="${test.dir}/coverage">
+			<fileset dir="${build.classes}/org.vpryst.downloadLink">
+				<include name="**/*.java" />
+			</fileset>
+			<fileset dir="${src.dir}">
+				<include name="**/*.java" />
+			</fileset>
+			<fileset dir="${src.dir}">
+				<include name="**/*.java" />
+			</fileset>
+		</cobertura-report-->
+	<!--mkdir dir="${build.instrumented}" />
+		<cobertura-instrument todir="${build.instrumented}">
+			
+			<fileset dir="${build.classes}">
+				<include name="**/*.class" />
+			</fileset>
+			<fileset dir="${lib.dir}">
+				<include name="/*.jar" />
+			</fileset>
+		</cobertura-instrument>
+	</target-->
+
+	<!--property name="cobertura.dir" value="c:/cobertura-1.9.4.1" />
+
+	<path id="cobertura.classpath">
+		<fileset dir="${cobertura.dir}">
+			<include name="cobertura.jar" />
+			<include name="lib/**/*.jar" />
+		</fileset>
+	</path>
+
+	<taskdef classpathref="cobertura.classpath" resource="tasks.properties" />
+	<target name="test">
+		<cobertura-instrument todir="instrumented">
+			<ignore regex="org.apache.log4j.*" />
+			<fileset dir="${build.classes}">
+				<include name="**/*.class" />
+				<exclude name="**/*Test.class" />
+			</fileset>
+			
+			<fileset dir="${lib.dir}">
+				<include name="my-simple-plugin.jar" />
+			</fileset>
+		</cobertura-instrument>
+	</target-->
+
+	<property name="cobertura.dir" value="${lib.dir}" />
+
+	<path id="cobertura.classpath">
+		<fileset dir="${cobertura.dir}">
+			<include name="cobertura.jar" />
+			<include name="*.jar" />
+		</fileset>
+	</path>
+
+	<taskdef classpathref="cobertura.classpath" resource="tasks.properties" />
+	<target name="test">
+		<cobertura-instrument todir="instrumented">
+			<!--ignore regex="org.apache.log4j.*" /-->
+			<fileset dir="${build.classes}">
+				<include name="**/*.class" />
+				<exclude name="**/*Test.class" />
+			</fileset>
+
+			<!--fileset dir="${lib.dir}">
+	                <include name="my-simple-plugin.jar" />
+	            </fileset-->
+		</cobertura-instrument>
+	</target>
+	<target name="test1">
+		<cobertura-report format="html" destdir="coveragereport" >
+		    <fileset dir="${src.main}">
+		        <include name="**/*.java" />
+		        <exclude name="**/*Stub.java" />
+		    </fileset>
+		    <!--fileset dir="${guisrc.dir}">
+		        <include name="**/*.java" />
+		        <exclude name="**/*RB.java" />
+		    </fileset-->
+		</cobertura-report>
+	</target>
 
 </project>
