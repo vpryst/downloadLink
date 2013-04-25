@@ -14,11 +14,14 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
 
-public class ConnactionManager {
+/**
+ * @author vpryst
+ */
+public class ConnectionManager {
 
-    private static CloseableHttpClient httpClient = null;
+    private CloseableHttpClient httpClient = null;
 
-    private final Logger logger = Logger.getLogger(ConnactionManager.class);
+    private final Logger logger = Logger.getLogger(ConnectionManager.class);
 
     private final String loginFieldName = "name";
     private final String passwordFieldName = "pass";
@@ -28,6 +31,11 @@ public class ConnactionManager {
     private HttpPost httpPost;
     private CloseableHttpResponse responseAutentificate;
 
+    /**
+     * create HttpClien
+     * 
+     * @return HttpClient if not null
+     */
     public CloseableHttpClient getConnection() {
         if (httpClient == null) {
             httpClient = HttpClients.createDefault();
@@ -35,6 +43,14 @@ public class ConnactionManager {
         return httpClient;
     }
 
+    /**
+     * Autentificate at the site
+     * 
+     * @param url
+     * @param loginName
+     * @param password
+     * @return HttpClient
+     */
     public CloseableHttpClient autentificate(String url, String loginName, String password) {
         getConnection();
         logger.info(Messager.getString("org.vpryst.download.ConnectionUrl.authenticate"));

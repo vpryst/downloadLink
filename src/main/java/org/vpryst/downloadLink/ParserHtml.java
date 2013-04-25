@@ -3,7 +3,6 @@ package org.vpryst.downloadLink;
 import java.io.IOException;
 import java.util.HashMap;
 
-import org.apache.log4j.Logger;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -16,12 +15,16 @@ public class ParserHtml {
     private final String fileLink = "href";
     private final String fileName = "onclick";
     private final String indexOfFrom = "\",\"";
-    
-    private final Logger logger = Logger.getLogger(ParserHtml.class);
+    private final int countFrom = 3;
+    private final int countTo = 3;
     private Document doc = null;
     private HashMap<String, String> LinkMap = new HashMap<String, String>();
     private String url = "";
 
+    /**
+     * 
+     * @param url
+     */
     public ParserHtml(String url) {
         this.url = url;
         System.setProperty("http.proxyHost", Messager.getString("org.vpryst.downloadLink.ParserHtml.proxy"));
@@ -34,6 +37,9 @@ public class ParserHtml {
         }
     }
 
+    /**
+     * @return
+     */
     public HashMap<String, String> createNameLinkMap() {
         Elements trElements = doc.getElementsByClass(classTr);
         for (Element el : trElements) {
@@ -44,8 +50,8 @@ public class ParserHtml {
                 String temp = aElement.attr(fileName);
                 String valueMap = "";
 
-                from = temp.indexOf(indexOfFrom) + 3;
-                to = temp.length() - 3;
+                from = temp.indexOf(indexOfFrom) + countFrom;
+                to = temp.length() - countTo;
                 valueMap = temp.substring(from, to).replace(" ", "_");
                 LinkMap.put(url + keyMap, valueMap);
             }
