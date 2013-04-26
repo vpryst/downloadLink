@@ -9,47 +9,50 @@ import org.apache.log4j.Logger;
 
 public class CommandsManager {
 
-    private final Logger LOGGER_COMMANDS_MANAGER = Logger.getLogger(CommandsManager.class);
-	private String name = "";
-	private String pass = "";
+    private final Logger logger = Logger.getLogger(CommandsManager.class);
+    private String name = "";
+    private String pass = "";
 
-	public CommandsManager(String[] args) {
-		Options options = new Options();
+    /**
+     * @param args
+     */
+    public CommandsManager(String[] args) {
+        Options options = new Options();
 
-		options.addOption("l", true, "login");
-		options.addOption("p", true, "password");
+        options.addOption(Messager.getString("org.vpryst.downloadLink.CommandsManager.l"), true,
+            Messager.getString("org.vpryst.downloadLink.CommandsManager.login"));
+        options.addOption(Messager.getString("org.vpryst.downloadLink.CommandsManager.p"), true,
+            Messager.getString("org.vpryst.downloadLink.CommandsManager.password"));
 
-		CommandLineParser parser = new PosixParser();
-		CommandLine cmd;
-		try {
-			cmd = parser.parse(options, args);
-			if (cmd.hasOption("l") && cmd.hasOption("p")) {
-				setName(cmd.getOptionValue("l"));
-				setPass(cmd.getOptionValue("p"));
-			} else if (cmd.hasOption("v")) {
-				setName("Anonim123");
-				setPass("123456");
-			}
-		} catch (ParseException e) {
-			// e.printStackTrace();
-			LOGGER_COMMANDS_MANAGER.error(e.getMessage());
-		}
-	}
+        CommandLineParser parser = new PosixParser();
+        CommandLine cmd;
+        try {
+            cmd = parser.parse(options, args);
+            if (cmd.hasOption(Messager.getString("org.vpryst.downloadLink.CommandsManager.l")) &&
+                cmd.hasOption(Messager.getString("org.vpryst.downloadLink.CommandsManager.p"))) {
+                setName(cmd.getOptionValue(Messager.getString("org.vpryst.downloadLink.CommandsManager.l")));
+                setPass(cmd.getOptionValue(Messager.getString("org.vpryst.downloadLink.CommandsManager.p")));
+            }
+        } catch (ParseException e) {
+            // e.printStackTrace();
+            logger.error(e);
+        }
+    }
 
-	public String getName() {
-		return name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public String getPass() {
-		return pass;
-	}
+    public String getPass() {
+        return pass;
+    }
 
-	public void setPass(String pass) {
-		this.pass = pass;
-	}
+    public void setPass(String pass) {
+        this.pass = pass;
+    }
 
 }
