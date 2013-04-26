@@ -3,12 +3,15 @@ package org.vpryst.downloadLink;
 import java.io.IOException;
 import java.util.HashMap;
 
+import org.apache.log4j.Logger;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 public class ParserHtml {
+    
+    private final Logger logger = Logger.getLogger(ParserHtml.class);
 
     private final String classTr = "td-download";
     private final String tag = "a";
@@ -32,8 +35,10 @@ public class ParserHtml {
 
         try {
             doc = Jsoup.connect(url).get();
-        } catch (IOException e1) {
-            e1.printStackTrace();
+        } catch (IOException e) {
+            
+            e.printStackTrace();
+            logger.info(e);
         }
     }
 

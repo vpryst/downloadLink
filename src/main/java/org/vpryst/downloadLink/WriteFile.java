@@ -12,13 +12,13 @@ public class WriteFile {
     private HashMap<String, String> map = new HashMap<String, String>();
     private Iterator<Entry<String, String>> iteratrLink = null;
     private ConnectionManager connection = new ConnectionManager();
-
+    private boolean check;
     /**
      * @param name
      * @param password
      */
     public WriteFile(String name, String password) {
-        connection.autentificate(Messager.getString("org.vpryst.downloadLink.WriteFile.link"), name, password);
+       check = connection.autentificate(Messager.getString("org.vpryst.downloadLink.WriteFile.link"), name, password);
     }
 
     /**
@@ -35,12 +35,16 @@ public class WriteFile {
     public void fetchFile() {
         FileFetcher file = new FileFetcher(connection.getConnection());
         iteratrLink = map.entrySet().iterator();
-        while (iteratrLink.hasNext()) {
-            Entry<String, String> keyValue = iteratrLink.next();
-            String key = keyValue.getKey();
-            String value = keyValue.getValue();
+        try {
+            while (iteratrLink.hasNext()) {
+                Entry<String, String> keyValue = iteratrLink.next();
+                String key = keyValue.getKey();
+                String value = keyValue.getValue();
 
-            file.fileData(key, value);
+                file.fileData(key, value);
+            }
+        } finally {
+            connection.closeHttpClien();
         }
     }
 }

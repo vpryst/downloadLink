@@ -35,8 +35,7 @@ public class CommandsManager {
             }
         } catch (ParseException e) {
             // e.printStackTrace();
-            logger.error(e.getMessage());
-
+            logger.error(e);
         }
     }
 

@@ -124,7 +124,7 @@
 
 	<path id="cobertura.classpath">
 		<fileset dir="${cobertura.dir}">
-			<include name="cobertura.jar" />
+			<include name="cobertura-1.9.4.jar" />
 			<include name="*.jar" />
 		</fileset>
 	</path>
@@ -132,15 +132,11 @@
 	<taskdef classpathref="cobertura.classpath" resource="tasks.properties" />
 	<target name="test">
 		<cobertura-instrument todir="instrumented">
-			<!--ignore regex="org.apache.log4j.*" /-->
+			
 			<fileset dir="${build.classes}">
 				<include name="**/*.class" />
 				<exclude name="**/*Test.class" />
 			</fileset>
-
-			<!--fileset dir="${lib.dir}">
-	                <include name="my-simple-plugin.jar" />
-	            </fileset-->
 		</cobertura-instrument>
 	</target>
 	<target name="test1">
@@ -148,11 +144,7 @@
 		    <fileset dir="${src.main}">
 		        <include name="**/*.java" />
 		        <exclude name="**/*Stub.java" />
-		    </fileset>
-		    <!--fileset dir="${guisrc.dir}">
-		        <include name="**/*.java" />
-		        <exclude name="**/*RB.java" />
-		    </fileset-->
+		    </fileset>		    
 		</cobertura-report>
 	</target>
 

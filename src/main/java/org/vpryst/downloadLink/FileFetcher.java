@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 
+import org.apache.http.HttpHost;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -28,7 +30,9 @@ public class FileFetcher {
     private CloseableHttpClient httpClient = null;
     private HttpGet httpGet;
     private CloseableHttpResponse responseGetData;
-
+    private HttpHost proxy;
+    private RequestConfig config;
+    
     private InputStreamReader inputDataStream;
     private BufferedReader bufferedDataReader;
     private FileOutputStream fileOutput;
@@ -43,11 +47,11 @@ public class FileFetcher {
     }
 
     /**
-     * @param contentType String what header was receive
+     * @param contentTypeHtml String what header was receive
      * @return extension what is received
      */
-    public String getFileExtension(final String contentType) {
-        if (contentType.equals(applicationType)) {
+    public String getFileExtension(String contentTypeHtml) {
+        if (contentTypeHtml.equals(applicationType)) {
             return typePdf;
         } else {
             return typeHtml;
@@ -61,13 +65,17 @@ public class FileFetcher {
      * @param fileName
      */
     public void fileData(String url, String fileName) {
+        proxy = new HttpHost(Messager.getString("org.vpryst.downloadLink.ParserHtml.proxy"), Integer.valueOf(Messager
+            .getString("org.vpryst.downloadLink.ParserHtml.port")), "http");
+        config = RequestConfig.custom().setProxy(proxy).build();
         String header = "";
-        logger.info(Messager.getString("org.vpryst.download.ConnectionUrl.startDownload"));
+        logger.info(Messager.getString("org.vpryst.download.ConnectionUrl.startDownload") + " " + url + " " + fileName);
         try {
             httpGet = new HttpGet(url);
+            httpGet.setConfig(config);
             responseGetData = httpClient.execute(httpGet);
             if (responseGetData.getFirstHeader(contentType) != null) {
-                header = contentType;
+                header = responseGetData.getFirstHeader(contentType).getValue();
             }
             inputDataStream = new InputStreamReader(responseGetData.getEntity().getContent());
             bufferedDataReader = new BufferedReader(inputDataStream);
@@ -106,7 +114,6 @@ public class FileFetcher {
             }
         } catch (IOException e) {
             logger.error(e.getMessage());
-        }
-        
+        }        
     }
 }
