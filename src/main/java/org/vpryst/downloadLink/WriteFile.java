@@ -1,5 +1,6 @@
 package org.vpryst.downloadLink;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map.Entry;
@@ -19,6 +20,10 @@ public class WriteFile {
      */
     public WriteFile(String name, String password) {
        check = connection.autentificate(Messager.getString("org.vpryst.downloadLink.WriteFile.link"), name, password);
+    }
+    
+    public void getLoginPassword() {
+        
     }
 
     /**
@@ -41,10 +46,11 @@ public class WriteFile {
                 String key = keyValue.getKey();
                 String value = keyValue.getValue();
 
-                file.fileData(key, value);
+                file.fileDataLink(key, value);
             }
         } finally {
             connection.closeHttpClien();
         }
+
     }
 }

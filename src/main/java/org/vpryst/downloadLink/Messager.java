@@ -21,7 +21,11 @@ public class Messager {
         try {
             return resourceFile.getString(key);
         } catch (MissingResourceException e) {
-            return '!' + key + '!';
+            return "";
         }
+    }
+    public static String setString(String key, String value) {
+        
+        return "";
     }
 }

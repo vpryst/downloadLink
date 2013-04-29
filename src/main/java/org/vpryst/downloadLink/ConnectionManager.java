@@ -34,7 +34,6 @@ public class ConnectionManager {
 
     private HttpPost httpPost;
     private CloseableHttpResponse responseAutentificate;
-
     private HttpHost proxy;
     private RequestConfig config;
 
