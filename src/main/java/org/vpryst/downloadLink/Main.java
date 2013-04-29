@@ -4,8 +4,8 @@ public class Main {
     public static void main(String[] args) {
         CommandsManager command = new CommandsManager(args);
         WriteFile files = new WriteFile(command.getName(),command.getPass());
-        files.getLinks();
-        files.fetchFile();
+        //files.getLinks();
+        //files.fetchFile();
        
     }
 }
