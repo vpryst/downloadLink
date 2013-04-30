@@ -17,35 +17,69 @@ import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
 
 /**
+ * Create connection to Website
+ * 
  * @author vpryst
  */
 public class ConnectionManager {
 
+    private final Logger LOGGER = Logger.getLogger(ConnectionManager.class);
+
+    /**
+     * Tag input Id
+     */
+    private final String LOGIN_FIELD_NAME = "name";
+
+    /**
+     * Tag input Id
+     */
+    private final String PASSWORD_FIELD_NAME = "pass";
+
+    /**
+     * Hidden tag input id
+     */
+    private final String FORM_ID_FIELD_NAME = "form_id";
+    /**
+     * Hidden tag input value
+     */
+    private final String FORM_ID_FIELD_VALUE = "user_login";
+    /**
+     * Path to user Login
+     */
+    private final String USER_LOGIN = "/user/";
+    /**
+     * Status User login
+     */
+    private final int STATUS_LOGIN = 302;
+
     private CloseableHttpClient httpClient = null;
-
-    private final Logger logger = Logger.getLogger(ConnectionManager.class);
-
-    private final String loginFieldName = "name";
-    private final String passwordFieldName = "pass";
-    private final String formIdFieldName = "form_id";
-    private final String formIdFieldValue = "user_login";
-    private final String userLogin = "/user/";
-    private final int statusLogin = 302;
-
     private HttpPost httpPost;
     private CloseableHttpResponse responseAutentificate;
-
     private HttpHost proxy;
     private RequestConfig config;
+    private String user;
+    private String pass;
 
-    public ConnectionManager() {
-        // Default Constructor
+    /**
+     * Take user and password and provide Authorized
+     * 
+     * @param user
+     * @param pass
+     */
+    public ConnectionManager(String user, String pass) {
+        this.user = user;
+        this.pass = pass;
+        autentificate(FilePropertyManager.getPropertyString("WriteFile.link"));
+    }
+    public ConnectionManager(String user, String pass, int i) {
+        this.user = user;
+        this.pass = pass;
     }
 
     /**
      * create HttpClien
      * 
-     * @return HttpClient if not null
+     * @return HttpClient
      */
     public CloseableHttpClient getConnection() {
         if (httpClient == null) {
@@ -58,30 +92,28 @@ public class ConnectionManager {
      * Autentificate at the site
      * 
      * @param url
-     * @param loginName
-     * @param password
      * @return HttpClient
      */
-    public boolean autentificate(String url, String loginName, String password) {
+    public boolean autentificate(String url) {
+        UrlEncodedFormEntity urlEncodeParam;
         boolean checkAutentificate = false;
-        proxy =
-            new HttpHost(Messager.getString("org.vpryst.downloadLink.ParserHtml.proxy"), Integer.valueOf(Messager
-                .getString("org.vpryst.downloadLink.ParserHtml.port")), "http");
-        config = RequestConfig.custom().setProxy(proxy).build();
+
         getConnection();
-        logger.info(Messager.getString("org.vpryst.download.ConnectionUrl.authenticate"));
-        httpPost = new HttpPost(url + userLogin);
+        LOGGER.info(FilePropertyManager.getMessageString("ConnectionUrl.authenticate"));
+        httpPost = new HttpPost(url + USER_LOGIN);
 
         List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
-        nameValuePairs.add(new BasicNameValuePair(loginFieldName, loginName));
-        nameValuePairs.add(new BasicNameValuePair(passwordFieldName, password));
-        nameValuePairs.add(new BasicNameValuePair(formIdFieldName, formIdFieldValue));
+        nameValuePairs.add(new BasicNameValuePair(LOGIN_FIELD_NAME, user));
+        nameValuePairs.add(new BasicNameValuePair(PASSWORD_FIELD_NAME, pass));
+        nameValuePairs.add(new BasicNameValuePair(FORM_ID_FIELD_NAME, FORM_ID_FIELD_VALUE));
+        
         try {
             try {
-                httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-                httpPost.setConfig(config);
+                urlEncodeParam = new UrlEncodedFormEntity(nameValuePairs);
+                httpPost.setEntity(urlEncodeParam);
+                httpPost.setConfig(proxySetting());
                 responseAutentificate = httpClient.execute(httpPost);
-                if (responseAutentificate.getStatusLine().getStatusCode() == statusLogin) {
+                if (responseAutentificate.getStatusLine().getStatusCode() == STATUS_LOGIN) {
                     checkAutentificate = true;
                 }
 
@@ -90,17 +122,33 @@ public class ConnectionManager {
                 responseAutentificate.close();
             }
         } catch (IOException e) {
-            logger.error(e.getMessage());
+          LOGGER.warn(e.getMessage());
         }
         System.out.println(checkAutentificate);
         return checkAutentificate;
     }
 
+    /**
+     * Set proxy setting for HttpPost or HttpGet request
+     * 
+     * @return config
+     */
+    public RequestConfig proxySetting() {
+        proxy =
+            new HttpHost(FilePropertyManager.getPropertyString("ParserHtml.proxy"), Integer.valueOf(FilePropertyManager
+                .getPropertyString("ParserHtml.port")), "http");
+        config = RequestConfig.custom().setProxy(proxy).build();
+        return config;
+    }
+
+    /**
+     * Close HttpClient
+     */
     public void closeHttpClien() {
         try {
             httpClient.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.warn(e);
         }
     }
 }
