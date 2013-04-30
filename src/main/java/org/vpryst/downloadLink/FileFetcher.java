@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 
-import org.apache.http.Header;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -30,7 +29,7 @@ public class FileFetcher {
      */
     private final String APLICATION_TYPE = "application/pdf";
     /**
-     * Response Header name   
+     * Response Header name
      */
     private final String CONTENT_TYPE_LOCATION = "Location";
     /**
@@ -82,19 +81,14 @@ public class FileFetcher {
             httpGet = new HttpGet(url);
             httpGet.setConfig(connection.proxySetting());
             responseGetData = connection.getConnection().execute(httpGet);
-
-            Header[] headers = responseGetData.getAllHeaders();
-            for (int i = 0; i < headers.length; i++) {
-                System.out.println(headers[i]);
-            }
             if (responseGetData.getFirstHeader(CONTENT_TYPE) != null) {
                 header = responseGetData.getFirstHeader(CONTENT_TYPE).getValue();
             }
-            inputDataStream = new InputStreamReader(responseGetData.getEntity().getContent());
+            inputDataStream = new InputStreamReader(responseGetData.getEntity().getContent(), "ISO-8859-1");
             bufferedDataReader = new BufferedReader(inputDataStream);
             savefile(fileName + getFileExtension(header));
         } catch (IOException e) {
-            LOGGER.error(e.getMessage());
+            LOGGER.warn(e);
         }
     }
 
@@ -108,7 +102,7 @@ public class FileFetcher {
         try {
             try {
                 fileOutput = new FileOutputStream(fileName);
-                outputWriter = new OutputStreamWriter(fileOutput);
+                outputWriter = new OutputStreamWriter(fileOutput, "ISO-8859-1");
                 bufferWriter = new BufferedWriter(outputWriter);
                 while ((symbolRead = bufferedDataReader.read()) != -1) {
                     bufferWriter.write(symbolRead);
@@ -126,12 +120,13 @@ public class FileFetcher {
                 LOGGER.info(FilePropertyManager.getMessageString("ConnectionUrl.endtDownload"));
             }
         } catch (IOException e) {
-            LOGGER.error(e.getMessage());
+            LOGGER.warn(e);
         }
     }
 
     /**
      * Take url and provide url
+     * 
      * @param url
      * @param fileName
      */
@@ -153,7 +148,7 @@ public class FileFetcher {
             }
 
         } catch (IOException e) {
-            LOGGER.error(e.getMessage());
+            LOGGER.warn(e);
         }
     }
 

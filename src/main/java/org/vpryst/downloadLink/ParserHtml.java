@@ -55,8 +55,6 @@ public class ParserHtml {
         try {
             doc = Jsoup.connect(url).get();
         } catch (IOException e) {
-
-            e.printStackTrace();
             LOGGER.warn(e);
         }
     }

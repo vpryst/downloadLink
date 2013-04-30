@@ -30,7 +30,7 @@ public class ConnectionManagerTest {
     @Test(expectedExceptions = java.lang.NullPointerException.class)
     public void getConnectionTestNull() {
         ConnectionManager manager = new ConnectionManager();
-        manager.autentificate("");
+        assertFalse(manager.autentificate("fgjdghjgdhfgjdghjfghjhdfghghj"));
     }
 
     @Test(expectedExceptions = java.lang.NullPointerException.class)
