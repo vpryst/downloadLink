@@ -63,10 +63,10 @@ public class ConnectionManager {
      */
     public boolean autentificate(String url, String loginName, String password) {
         boolean checkAutentificate = false;
-        /*proxy =
+        proxy =
             new HttpHost(Messager.getString("org.vpryst.downloadLink.ParserHtml.proxy"), Integer.valueOf(Messager
                 .getString("org.vpryst.downloadLink.ParserHtml.port")), "http");
-        config = RequestConfig.custom().setProxy(proxy).build();*/
+        config = RequestConfig.custom().setProxy(proxy).build();
         getConnection();
         logger.info(Messager.getString("org.vpryst.download.ConnectionUrl.authenticate"));
         httpPost = new HttpPost(url + userLogin);
@@ -78,7 +78,7 @@ public class ConnectionManager {
         try {
             try {
                 httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-                //httpPost.setConfig(config);
+                httpPost.setConfig(config);
                 responseAutentificate = httpClient.execute(httpPost);
                 if (responseAutentificate.getStatusLine().getStatusCode() == statusLogin) {
                     checkAutentificate = true;

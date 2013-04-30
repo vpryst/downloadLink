@@ -12,6 +12,8 @@ public class CommandsManager {
     private final Logger logger = Logger.getLogger(CommandsManager.class);
     private String name = "";
     private String pass = "";
+    
+    public static boolean GET_LINK = true;
 
     /**
      * @param args
@@ -32,6 +34,8 @@ public class CommandsManager {
                 cmd.hasOption(Messager.getString("org.vpryst.downloadLink.CommandsManager.p"))) {
                 setName(cmd.getOptionValue(Messager.getString("org.vpryst.downloadLink.CommandsManager.l")));
                 setPass(cmd.getOptionValue(Messager.getString("org.vpryst.downloadLink.CommandsManager.p")));
+            } else if (cmd.hasOption(Messager.getString("org.vpryst.downloadLink.CommandsManager.linkProperty"))) {
+                GET_LINK = false;
             }
         } catch (ParseException e) {
             // e.printStackTrace();

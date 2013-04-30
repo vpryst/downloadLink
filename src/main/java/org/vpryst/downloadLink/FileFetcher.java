@@ -69,14 +69,14 @@ public class FileFetcher {
      * @param fileName
      */
     public void fileDataSave(String url, String fileName) {
-        /*proxy = new HttpHost(Messager.getString("org.vpryst.downloadLink.ParserHtml.proxy"), Integer.valueOf(Messager
+        proxy = new HttpHost(Messager.getString("org.vpryst.downloadLink.ParserHtml.proxy"), Integer.valueOf(Messager
             .getString("org.vpryst.downloadLink.ParserHtml.port")), "http");
-        config = RequestConfig.custom().setProxy(proxy).build();*/
+        config = RequestConfig.custom().setProxy(proxy).build();
         String header = "";
         logger.info(Messager.getString("org.vpryst.download.ConnectionUrl.startDownload") + " " + url + " " + fileName);
         try {
             httpGet = new HttpGet(url);
-            //httpGet.setConfig(config);
+            httpGet.setConfig(config);
             responseGetData = httpClient.execute(httpGet);
             
             Header[] headers = responseGetData.getAllHeaders();
@@ -127,19 +127,20 @@ public class FileFetcher {
     }
     
     public void fileDataLink(String url, String fileName) {
-        /*
         proxy = new HttpHost(Messager.getString("org.vpryst.downloadLink.ParserHtml.proxy"), Integer.valueOf(Messager
             .getString("org.vpryst.downloadLink.ParserHtml.port")), "http");
-        config = RequestConfig.custom().setProxy(proxy).build();*/
+        config = RequestConfig.custom().setProxy(proxy).build();
         logger.info(Messager.getString("org.vpryst.download.ConnectionUrl.startDownload") + " " + url + " " + fileName);
         try {
             try {
             httpPost = new HttpPost(url);
-            //httpPost.setConfig(config);
+            httpPost.setConfig(config);
             responseGetData = httpClient.execute(httpPost);
             if (responseGetData.getFirstHeader(contentTypeLocation) != null) {
                 logger.info(responseGetData.getFirstHeader(contentTypeLocation).getValue());
                 System.out.println(responseGetData.getFirstHeader(contentTypeLocation).getValue());
+            } else {
+                System.out.println(Messager.getString("org.vpryst.downloadLink.FileFetcher.ErrorGetLink") + url);
             }
             } finally {
                 EntityUtils.consume(responseGetData.getEntity());

@@ -20,6 +20,8 @@ public class Messager {
 	private static final ResourceBundle resourceFile = ResourceBundle
 			.getBundle(mesengerFileName);
 
+	public Messager() {
+    }
 	/**
 	 * Return Value by key
 	 * 

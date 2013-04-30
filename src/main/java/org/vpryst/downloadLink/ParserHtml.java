@@ -50,7 +50,8 @@ public class ParserHtml {
         for (Element el : trElements) {
             Elements aElements = el.getElementsByTag(tag);
             for (Element aElement : aElements) {
-                int from, to;
+                int from;
+                int to;
                 String keyMap = aElement.attr(fileLink);
                 String temp = aElement.attr(fileName);
                 String valueMap = "";
