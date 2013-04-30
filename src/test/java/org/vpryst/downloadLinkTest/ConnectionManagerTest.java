@@ -10,7 +10,7 @@ import static org.mockito.Mockito.*;
 public class ConnectionManagerTest {
     @Test
     public void connectionTestWithoutParam() {
-        ConnectionManager manager = new ConnectionManager(null,null);
+        ConnectionManager manager = new ConnectionManager(null, null);
         assertFalse(manager.autentificate(FilePropertyManager.getPropertyString("WriteFile.link")));
     }
 
@@ -20,20 +20,22 @@ public class ConnectionManagerTest {
         assertTrue(manager.autentificate(FilePropertyManager.getPropertyString("WriteFile.link")));
     }
 
-   @Test
-    public void getConnectionTest() {
-        ConnectionManager manager = new ConnectionManager("dfg","fgdf");
-        manager.closeHttpClien();
-        
-    }
-    
     @Test
-    public void getConnectionTestMock() {
-        ConnectionManager manager = mock(ConnectionManager.class);
+    public void getConnectionTest() {
+        ConnectionManager manager = new ConnectionManager("dfg", "fgdf");
         manager.closeHttpClien();
-        //assertEquals(manager.autentificate("http://refcardz.dzone.com", "dfsdfgsd", "sdfsdf"),true);
-        //assertTrue(man.autentificate("http://refcardz.dzone.com", "Anonim123", "123456"));
-        
+
     }
-    
+
+    @Test(expectedExceptions = java.lang.NullPointerException.class)
+    public void getConnectionTestNull() {
+        ConnectionManager manager = new ConnectionManager();
+        manager.autentificate("");
+    }
+
+    @Test(expectedExceptions = java.lang.NullPointerException.class)
+    public void getConnectionTestNullClose() {
+        ConnectionManager manager = new ConnectionManager();
+        manager.closeHttpClien();
+    }
 }

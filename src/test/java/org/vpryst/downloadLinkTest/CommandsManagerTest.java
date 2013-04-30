@@ -1,9 +1,10 @@
 package org.vpryst.downloadLinkTest;
 
-import org.apache.commons.cli.ParseException;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+
 import org.testng.annotations.Test;
 import org.vpryst.downloadLink.CommandsManager;
-import static org.testng.Assert.*;
 
 /**
  * @author vpryst
@@ -36,8 +37,8 @@ public class CommandsManagerTest {
         CommandsManager command = new CommandsManager(args1);
         command.setName("cdasdfdsf");
         command.setPass("dfgdfh");
-        command.getName();
-        command.getPass();
+        assertEquals(command.getName(), "cdasdfdsf");
+        assertEquals(command.getPass(), "dfgdfh");
     }
 
     @Test

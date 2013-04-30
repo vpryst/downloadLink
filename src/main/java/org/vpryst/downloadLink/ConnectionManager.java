@@ -75,6 +75,9 @@ public class ConnectionManager {
         this.user = user;
         this.pass = pass;
     }
+    public ConnectionManager() {
+        httpClient = null;
+    }
 
     /**
      * create HttpClien
