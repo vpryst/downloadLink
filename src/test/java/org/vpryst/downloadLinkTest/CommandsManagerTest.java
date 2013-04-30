@@ -1,26 +1,33 @@
 package org.vpryst.downloadLinkTest;
 
+import org.apache.commons.cli.ParseException;
 import org.testng.annotations.Test;
 import org.vpryst.downloadLink.CommandsManager;
+import static org.testng.Assert.*;
 
 /**
  * @author vpryst
  */
 public class CommandsManagerTest {
-    private String[] args = new String[4];
 
     @Test
     public void commandsManagerConstructor() {
-        args = null;
+        String[] args = null;
         CommandsManager command = new CommandsManager(args);
-        
+        assertEquals(command.getName(), "");
+        assertEquals(command.getPass(), "");
+
     }
 
-    @Test(expectedExceptions = java.lang.NullPointerException.class)
+    @Test
     public void commandsManagerConstructorLogin() {
-        args[0] = "-l";
-        args[1] = "login";
-        CommandsManager command = new CommandsManager(args);
+        String[] args1 = {"-l"};
+        CommandsManager command = new CommandsManager(args1);
+    }
+    @Test
+    public void commandsManagerConstructorPassword() {
+        String[] args1 = {"-p"};
+        CommandsManager command = new CommandsManager(args1);
     }
 
     @Test
@@ -31,5 +38,12 @@ public class CommandsManagerTest {
         command.setPass("dfgdfh");
         command.getName();
         command.getPass();
+    }
+
+    @Test
+    public void commandsManagerConstructorLink() {
+        String[] args1 ={"-g"};
+        CommandsManager command = new CommandsManager(args1);
+        assertFalse(command.isRequiredFetch());
     }
 }

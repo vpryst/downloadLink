@@ -1,11 +1,15 @@
 package org.vpryst.downloadLink;
 
+/**
+ * @author vpryst Main Class for execute program
+ */
 public class Main {
     public static void main(String[] args) {
-        String[] s = {"-l"};
         CommandsManager command = new CommandsManager(args);
-        WriteFile files = new WriteFile(command.getName(),command.getPass());
-        files.getLinks();
-        files.fetchFile();
+        ConnectionManager connctionManager = new ConnectionManager(command.getName(), command.getPass());
+
+        WriteFile files = new WriteFile(connctionManager);
+        files.fetchFile(command.isRequiredFetch());
+
     }
 }
