@@ -8,12 +8,9 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 
 import org.apache.http.Header;
-import org.apache.http.HttpHost;
-import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
 
@@ -22,21 +19,31 @@ import org.apache.log4j.Logger;
  */
 public class FileFetcher {
 
-    private final Logger logger = Logger.getLogger(FileFetcher.class);
+    private final Logger LOGGER = Logger.getLogger(FileFetcher.class);
 
-    private final String contentType = "Content-Type";
-    private final String applicationType = "application/pdf";
-    private final String contentTypeLocation = "Location";
-    private final String typePdf = ".pdf";
-    private final String typeHtml = ".html";
+    /**
+     * Response Header name
+     */
+    private final String CONTENT_TYPE = "Content-Type";
+    /**
+     * Response Header value
+     */
+    private final String APLICATION_TYPE = "application/pdf";
+    /**
+     * Response Header name   
+     */
+    private final String CONTENT_TYPE_LOCATION = "Location";
+    /**
+     * Extension of files
+     */
+    private final String TYPE_PDF = ".pdf";
+    private final String TYPE_HTML = ".html";
 
-    private CloseableHttpClient httpClient = null;
+    private ConnectionManager connection = null;
     private HttpGet httpGet;
     private HttpPost httpPost;
     private CloseableHttpResponse responseGetData;
-    private HttpHost proxy;
-    private RequestConfig config;
-    
+
     private InputStreamReader inputDataStream;
     private BufferedReader bufferedDataReader;
     private FileOutputStream fileOutput;
@@ -44,10 +51,10 @@ public class FileFetcher {
     private BufferedWriter bufferWriter;
 
     /**
-     * @param httpClient
+     * @param connection
      */
-    public FileFetcher(CloseableHttpClient httpClient) {
-        this.httpClient = httpClient;
+    public FileFetcher(ConnectionManager connection) {
+        this.connection = connection;
     }
 
     /**
@@ -55,10 +62,10 @@ public class FileFetcher {
      * @return extension what is received
      */
     public String getFileExtension(String contentTypeHtml) {
-        if (contentTypeHtml.equals(applicationType)) {
-            return typePdf;
+        if (contentTypeHtml.equals(APLICATION_TYPE)) {
+            return TYPE_PDF;
         } else {
-            return typeHtml;
+            return TYPE_HTML;
         }
     }
 
@@ -69,34 +76,31 @@ public class FileFetcher {
      * @param fileName
      */
     public void fileDataSave(String url, String fileName) {
-        proxy = new HttpHost(Messager.getString("org.vpryst.downloadLink.ParserHtml.proxy"), Integer.valueOf(Messager
-            .getString("org.vpryst.downloadLink.ParserHtml.port")), "http");
-        config = RequestConfig.custom().setProxy(proxy).build();
         String header = "";
-        logger.info(Messager.getString("org.vpryst.download.ConnectionUrl.startDownload") + " " + url + " " + fileName);
+        LOGGER.info(FilePropertyManager.getMessageString("ConnectionUrl.startDownload") + " " + url + " " + fileName);
         try {
             httpGet = new HttpGet(url);
-            httpGet.setConfig(config);
-            responseGetData = httpClient.execute(httpGet);
-            
+            httpGet.setConfig(connection.proxySetting());
+            responseGetData = connection.getConnection().execute(httpGet);
+
             Header[] headers = responseGetData.getAllHeaders();
-            for (int i = 0; i<headers.length; i++) {
+            for (int i = 0; i < headers.length; i++) {
                 System.out.println(headers[i]);
             }
-            if (responseGetData.getFirstHeader(contentType) != null) {
-                header = responseGetData.getFirstHeader(contentType).getValue();
+            if (responseGetData.getFirstHeader(CONTENT_TYPE) != null) {
+                header = responseGetData.getFirstHeader(CONTENT_TYPE).getValue();
             }
             inputDataStream = new InputStreamReader(responseGetData.getEntity().getContent());
             bufferedDataReader = new BufferedReader(inputDataStream);
             savefile(fileName + getFileExtension(header));
         } catch (IOException e) {
-            logger.error(e.getMessage());
+            LOGGER.error(e.getMessage());
         }
     }
 
     /**
      * save data into file
-     *
+     * 
      * @param fileName
      */
     private void savefile(String fileName) {
@@ -119,38 +123,38 @@ public class FileFetcher {
 
                 EntityUtils.consume(responseGetData.getEntity());
                 responseGetData.close();
-                logger.info(Messager.getString("org.vpryst.download.ConnectionUrl.endtDownload"));
+                LOGGER.info(FilePropertyManager.getMessageString("ConnectionUrl.endtDownload"));
             }
         } catch (IOException e) {
-            logger.error(e.getMessage());
-        }        
+            LOGGER.error(e.getMessage());
+        }
     }
-    
-    public void fileDataLink(String url, String fileName) {
-        proxy = new HttpHost(Messager.getString("org.vpryst.downloadLink.ParserHtml.proxy"), Integer.valueOf(Messager
-            .getString("org.vpryst.downloadLink.ParserHtml.port")), "http");
-        config = RequestConfig.custom().setProxy(proxy).build();
-        logger.info(Messager.getString("org.vpryst.download.ConnectionUrl.startDownload") + " " + url + " " + fileName);
+
+    /**
+     * Take url and provide url
+     * @param url
+     * @param fileName
+     */
+    public void fileDataLink(String url) {
         try {
             try {
-            httpPost = new HttpPost(url);
-            httpPost.setConfig(config);
-            responseGetData = httpClient.execute(httpPost);
-            if (responseGetData.getFirstHeader(contentTypeLocation) != null) {
-                logger.info(responseGetData.getFirstHeader(contentTypeLocation).getValue());
-                System.out.println(responseGetData.getFirstHeader(contentTypeLocation).getValue());
-            } else {
-                System.out.println(Messager.getString("org.vpryst.downloadLink.FileFetcher.ErrorGetLink") + url);
-            }
+                httpPost = new HttpPost(url);
+                httpPost.setConfig(connection.proxySetting());
+                responseGetData = connection.getConnection().execute(httpPost);
+                if (responseGetData.getFirstHeader(CONTENT_TYPE_LOCATION) != null) {
+                    LOGGER.info(responseGetData.getFirstHeader(CONTENT_TYPE_LOCATION).getValue());
+                    System.out.println(responseGetData.getFirstHeader(CONTENT_TYPE_LOCATION).getValue());
+                } else {
+                    System.out.println(FilePropertyManager.getMessageString("org.vpryst.downloadLink.FileFetcher.ErrorGetLink") + url);
+                }
             } finally {
                 EntityUtils.consume(responseGetData.getEntity());
                 responseGetData.close();
             }
-            
+
         } catch (IOException e) {
-            logger.error(e.getMessage());
+            LOGGER.error(e.getMessage());
         }
     }
-    
-    
+
 }

@@ -7,43 +7,50 @@ import org.apache.commons.cli.ParseException;
 import org.apache.commons.cli.PosixParser;
 import org.apache.log4j.Logger;
 
+/**
+ *  
+ */
 public class CommandsManager {
 
-    private final Logger logger = Logger.getLogger(CommandsManager.class);
+    private final Logger LOGGER = Logger.getLogger(CommandsManager.class);
     private String name = "";
     private String pass = "";
-    
-    public static boolean GET_LINK = true;
+
+    private static boolean isGetLink = true;
 
     /**
-     * @param args
+     * @param args Constructor take String array and pase to commands
      */
     public CommandsManager(String[] args) {
         Options options = new Options();
 
-        options.addOption(Messager.getString("org.vpryst.downloadLink.CommandsManager.l"), true,
-            Messager.getString("org.vpryst.downloadLink.CommandsManager.login"));
-        options.addOption(Messager.getString("org.vpryst.downloadLink.CommandsManager.p"), true,
-            Messager.getString("org.vpryst.downloadLink.CommandsManager.password"));
-
+        options.addOption(FilePropertyManager.getCommandLineString("CommandsManager.l"), true,
+            FilePropertyManager.getCommandLineString("CommandsManager.login"));
+        options.addOption(FilePropertyManager.getCommandLineString("CommandsManager.p"), true,
+            FilePropertyManager.getCommandLineString("CommandsManager.password"));
+        options.addOption(FilePropertyManager.getCommandLineString("CommandsManager.linkProperty"), false,
+            FilePropertyManager.getCommandLineString("CommandsManager.link"));
         CommandLineParser parser = new PosixParser();
         CommandLine cmd;
         try {
             cmd = parser.parse(options, args);
-            if (cmd.hasOption(Messager.getString("org.vpryst.downloadLink.CommandsManager.l")) &&
-                cmd.hasOption(Messager.getString("org.vpryst.downloadLink.CommandsManager.p"))) {
-                setName(cmd.getOptionValue(Messager.getString("org.vpryst.downloadLink.CommandsManager.l")));
-                setPass(cmd.getOptionValue(Messager.getString("org.vpryst.downloadLink.CommandsManager.p")));
-            } else if (cmd.hasOption(Messager.getString("org.vpryst.downloadLink.CommandsManager.linkProperty"))) {
-                GET_LINK = false;
+            if (cmd.hasOption(FilePropertyManager.getCommandLineString("CommandsManager.l")) &&
+                cmd.hasOption(FilePropertyManager.getCommandLineString("CommandsManager.p"))) {
+                setName(cmd.getOptionValue(FilePropertyManager.getCommandLineString("CommandsManager.l")));
+                setPass(cmd.getOptionValue(FilePropertyManager.getCommandLineString("CommandsManager.p")));
+            } else if (cmd.hasOption(FilePropertyManager.getCommandLineString("CommandsManager.linkProperty"))) {
+                isGetLink = false;
             }
         } catch (ParseException e) {
             // e.printStackTrace();
-            logger.error(e);
+            LOGGER.warn(e);
         }
     }
 
     public String getName() {
+        if (name.equals("")) {
+            name = FilePropertyManager.getPropertyString("commandsManager.login");
+        }
         return name;
     }
 
@@ -52,11 +59,19 @@ public class CommandsManager {
     }
 
     public String getPass() {
+        if (pass.equals("")) {
+            pass = FilePropertyManager.getPropertyString("commandsManager.password");
+        }
         return pass;
     }
 
     public void setPass(String pass) {
         this.pass = pass;
+    }
+
+    public boolean isRequiredFetch() {
+
+        return isGetLink;
     }
 
 }
