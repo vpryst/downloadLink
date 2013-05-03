@@ -1,12 +1,13 @@
 <?xml version="1.0"?>
-<project xmlns:ivy="antlib:org.apache.ivy.ant" default="build_jar" name="downloalink">
+<project xmlns:ivy="antlib:org.apache.ivy.ant" default="build" name="downloalink">
 
 	<property file="build.properties" />
 
-	<taskdef resource="checkstyletask.properties" classpath="lib/checkstyle-5.6.jar" />
+	<taskdef resource="checkstyletask.properties" classpath="${checkstyle.jar}" />
 
 
 	<target name="resolve" description="Resolve and Retrieve with ivy">
+		<ivy:settings file="ivysettings.xml" />
 		<ivy:resolve />
 		<ivy:cachepath pathid="default.classpath" />
 		<ivy:retrieve sync="true" type="jar" />
@@ -28,7 +29,7 @@
 		</copy>
 	</target>
 
-	<target name="build_jar" depends="compile" description="pack project to jar">
+	<target name="build" depends="compile" description="pack project to jar">
 		<jar destfile="${runnable.dir}/${runnable.file.name}.jar" filesetmanifest="mergewithoutmain">
 			<manifest>
 				<attribute name="Main-Class" value="${manifest.main.class}" />
@@ -50,11 +51,22 @@
 		<delete dir="${runnable.dir}" />
 	</target>
 
-	<target name="checkstyle" description="Checks that we are using consistant well formed style.">
-		<checkstyle config="sun_checks.xml" failOnViolation="false">
-			<fileset dir="src/main/" includes="**/*.java" />
-			<formatter type="xml" toFile="build/checkstyle-result.xml" />
+	<target name="checkstyle" description="Generates a report of code convention violations." depends="init-checkstyle">
+		<!-- See http://checkstyle.sourceforge.net/anttask.html for full options of using checkstyle with ant-->
+		<mkdir dir="${build}" />
+		<checkstyle config="${checkstyle.config.file}" failureProperty="checkstyle.failure" failOnViolation="false">
+
+			<formatter type="xml" tofile="${checkstyle.result.file}" />
+			<fileset dir="${src.main}" includes="**/*.java" />
 		</checkstyle>
+	</target>
+
+	<target name="init-checkstyle" depends="resolve">
+		<path id="checkstyle.lib.path">
+			<fileset dir="${lib.dir}" includes="*.jar" />
+		</path>
+		<!-- Sevntu custom checks are retrieved by Ivy into lib folder and will be accessible to checkstyle-->
+		<taskdef resource="checkstyletask.properties" classpathref="checkstyle.lib.path" />
 	</target>
 
 	<target name="doc" description="Generate documentation">
@@ -64,87 +76,31 @@
 		</javadoc>
 	</target>
 
-
-
-	<!--taskdef classpath="lib/cobertura-1.9.4.jar" resource="tasks.properties" />
-	<target name="test"-->
-	<!--depends="compile"-->
-	<!--
-	  Generate a series of HTML files containing the coverage
-	  data in a user-readable form using nested source filesets.
-	  -->
-	<!--cobertura-report destdir="${test.dir}/coverage">
-			<fileset dir="${build.classes}/org.vpryst.downloadLink">
-				<include name="**/*.java" />
-			</fileset>
-			<fileset dir="${src.dir}">
-				<include name="**/*.java" />
-			</fileset>
-			<fileset dir="${src.dir}">
-				<include name="**/*.java" />
-			</fileset>
-		</cobertura-report-->
-	<!--mkdir dir="${build.instrumented}" />
-		<cobertura-instrument todir="${build.instrumented}">
-			
-			<fileset dir="${build.classes}">
-				<include name="**/*.class" />
-			</fileset>
-			<fileset dir="${lib.dir}">
-				<include name="/*.jar" />
-			</fileset>
-		</cobertura-instrument>
-	</target-->
-
-	<!--property name="cobertura.dir" value="c:/cobertura-1.9.4.1" />
-
 	<path id="cobertura.classpath">
-		<fileset dir="${cobertura.dir}">
-			<include name="cobertura.jar" />
-			<include name="lib/**/*.jar" />
-		</fileset>
-	</path>
-
-	<taskdef classpathref="cobertura.classpath" resource="tasks.properties" />
-	<target name="test">
-		<cobertura-instrument todir="instrumented">
-			<ignore regex="org.apache.log4j.*" />
-			<fileset dir="${build.classes}">
-				<include name="**/*.class" />
-				<exclude name="**/*Test.class" />
-			</fileset>
-			
-			<fileset dir="${lib.dir}">
-				<include name="my-simple-plugin.jar" />
-			</fileset>
-		</cobertura-instrument>
-	</target-->
-
-	<property name="cobertura.dir" value="${lib.dir}" />
-
-	<path id="cobertura.classpath">
-		<fileset dir="${cobertura.dir}">
+		<fileset dir="${lib.dir}">
 			<include name="cobertura-1.9.4.jar" />
 			<include name="*.jar" />
 		</fileset>
 	</path>
 
-	<taskdef classpathref="cobertura.classpath" resource="tasks.properties" />
-	<target name="test">
-		<cobertura-instrument todir="instrumented">
-			
+
+	<target name="prepare_cobertura" depends="build">
+		<taskdef classpathref="cobertura.classpath" resource="tasks.properties" />
+		<cobertura-instrument todir="${cobertura.instruments}">
+
 			<fileset dir="${build.classes}">
 				<include name="**/*.class" />
 				<exclude name="**/*Test.class" />
 			</fileset>
 		</cobertura-instrument>
 	</target>
-	<target name="test1">
-		<cobertura-report format="html" destdir="coveragereport" >
-		    <fileset dir="${src.main}">
-		        <include name="**/*.java" />
-		        <exclude name="**/*Stub.java" />
-		    </fileset>		    
+
+	<target name="cobertura" depends="prepare_cobertura" description="create code coverage report">
+		<cobertura-report format="html" destdir="${cobertura.coveragereport}">
+			<fileset dir="${src.main}">
+				<include name="**/*.java" />
+				<exclude name="**/*Stub.java" />
+			</fileset>
 		</cobertura-report>
 	</target>
 

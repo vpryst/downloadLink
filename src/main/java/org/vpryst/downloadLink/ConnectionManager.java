@@ -21,7 +21,7 @@ import org.apache.log4j.Logger;
  * 
  * @author vpryst
  */
-public class ConnectionManager {
+public class ConnectionManager implements ConstVariables {
 
     private final Logger LOGGER = Logger.getLogger(ConnectionManager.class);
 
@@ -48,9 +48,11 @@ public class ConnectionManager {
      */
     private final String USER_LOGIN = "/user/";
     /**
-     * Status User login
+     * Http Status for User login
      */
     private final int STATUS_LOGIN = 302;
+
+    private final String TYPE_CONNECTION = "http";
 
     private CloseableHttpClient httpClient = null;
     private HttpPost httpPost;
@@ -69,12 +71,14 @@ public class ConnectionManager {
     public ConnectionManager(String user, String pass) {
         this.user = user;
         this.pass = pass;
-        autentificate(FilePropertyManager.getPropertyString("WriteFile.link"));
+        autentificate(PROPERTY_LINK);
     }
+
     public ConnectionManager(String user, String pass, int i) {
         this.user = user;
         this.pass = pass;
     }
+
     public ConnectionManager() {
         httpClient = null;
     }
@@ -109,7 +113,7 @@ public class ConnectionManager {
         nameValuePairs.add(new BasicNameValuePair(LOGIN_FIELD_NAME, user));
         nameValuePairs.add(new BasicNameValuePair(PASSWORD_FIELD_NAME, pass));
         nameValuePairs.add(new BasicNameValuePair(FORM_ID_FIELD_NAME, FORM_ID_FIELD_VALUE));
-        
+
         try {
             try {
                 urlEncodeParam = new UrlEncodedFormEntity(nameValuePairs);
@@ -125,7 +129,7 @@ public class ConnectionManager {
                 responseAutentificate.close();
             }
         } catch (IOException e) {
-          LOGGER.warn(e.getMessage());
+            LOGGER.warn(e.getMessage());
         }
         System.out.println(checkAutentificate);
         return checkAutentificate;
@@ -137,10 +141,12 @@ public class ConnectionManager {
      * @return config
      */
     public RequestConfig proxySetting() {
-        proxy =
-            new HttpHost(FilePropertyManager.getPropertyString("ParserHtml.proxy"), Integer.valueOf(FilePropertyManager
-                .getPropertyString("ParserHtml.port")), "http");
-        config = RequestConfig.custom().setProxy(proxy).build();
+        if (!CONNECTION_PROXY.equals("") && !CONNECTION_PORT.equals("")) {
+            proxy = new HttpHost(CONNECTION_PROXY, Integer.valueOf(CONNECTION_PORT), TYPE_CONNECTION);
+            config = RequestConfig.custom().setProxy(proxy).build();
+        } else {
+            config = null;
+        }
         return config;
     }
 

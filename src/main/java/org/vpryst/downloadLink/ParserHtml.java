@@ -10,7 +10,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-public class ParserHtml {
+public class ParserHtml implements ConstVariables {
 
     private final Logger LOGGER = Logger.getLogger(ParserHtml.class);
 
@@ -45,12 +45,16 @@ public class ParserHtml {
 
     /**
      * Take page from Url
+     * 
      * @param url
      */
     public ParserHtml(String url) {
         this.url = url;
-        System.setProperty("http.proxyHost", FilePropertyManager.getPropertyString("ParserHtml.proxy"));
-        System.setProperty("http.proxyPort", FilePropertyManager.getPropertyString("ParserHtml.port"));
+        /**
+         * Set system property for proxy connection
+         */
+        System.setProperty(CONNECTION_PROXY_KEY, CONNECTION_PROXY);
+        System.setProperty(CONNECTION_PORT_KEY, CONNECTION_PORT);
 
         try {
             doc = Jsoup.connect(url).get();
@@ -61,6 +65,7 @@ public class ParserHtml {
 
     /**
      * Create Map of links and names of files
+     * 
      * @return Map<String,String>
      */
     public Map<String, String> createNameLinkMap() {
@@ -68,14 +73,12 @@ public class ParserHtml {
         for (Element el : trElements) {
             Elements aElements = el.getElementsByTag(TAG);
             for (Element aElement : aElements) {
-                int from;
-                int to;
                 String keyMap = aElement.attr(FILE_LINK);
                 String temp = aElement.attr(FILE_NAME);
                 String valueMap = "";
 
-                from = temp.indexOf(INDEX_OF_FROM) + COUNT_FROM;
-                to = temp.length() - COUNT_TO;
+                int from = temp.indexOf(INDEX_OF_FROM) + COUNT_FROM;
+                int to = temp.length() - COUNT_TO;
                 valueMap = temp.substring(from, to).replace(" ", "_");
                 linkMap.put(url + keyMap, valueMap);
             }

@@ -8,7 +8,7 @@ import java.util.Map.Entry;
 /**
  * @author vpryst
  */
-public class WriteFile {
+public class WriteFile implements ConstVariables {
 
     private Map<String, String> map = new HashMap<String, String>();
     private Iterator<Entry<String, String>> iteratrLink = null;
@@ -24,7 +24,7 @@ public class WriteFile {
      */
     public void fetchFile(boolean toFetch) {
         this.toFetch = toFetch;
-        ParserHtml parse = new ParserHtml(FilePropertyManager.getPropertyString("WriteFile.link"));
+        ParserHtml parse = new ParserHtml(PROPERTY_LINK);
         map = parse.createNameLinkMap();
 
         FileFetcher file = new FileFetcher(connection);

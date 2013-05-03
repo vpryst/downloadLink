@@ -14,40 +14,60 @@ import org.apache.log4j.Logger;
 public class CommandsManager {
 
     private final Logger LOGGER = Logger.getLogger(CommandsManager.class);
+
+    private final String COMMANDS_MANAGER_USER_KEY = "CommandsManager.user";
+    private final String COMMANDS_MANAGER_PASSWORD_KEY = "CommandsManager.password";
+    private final String COMMANDS_MANAGER_U = FilePropertyManager.getCommandLineString("CommandsManager.u");
+    private final String COMMANDS_MANAGER_USER = FilePropertyManager.getCommandLineString(COMMANDS_MANAGER_USER_KEY);
+    private final String USER_DESCRIPTION = FilePropertyManager.getMessageString("CommandsManager.userDescription");
+    private final String COMMANDS_MANAGER_P = FilePropertyManager.getCommandLineString("CommandsManager.p");
+    private final String COMMANDS_MANAGER_PASSWORD = FilePropertyManager.getCommandLineString(COMMANDS_MANAGER_PASSWORD_KEY);
+    private final String PASSWORD_DESCRIPTION = FilePropertyManager.getMessageString("CommandsManager.passwordDescription");
+    private final String COMMANDS_MANAGER_FETCH_F = FilePropertyManager.getCommandLineString("CommandsManager.fetchF");
+    private final String COMMANDS_MANAGER_FETCH_FILE = FilePropertyManager.getCommandLineString("CommandsManager.fetchFile");
+    private final String FETCH_FILE_DESCRIPTION = FilePropertyManager.getMessageString("CommandsManager.fetchFileDescription");
+    private final String COMMANDS_MANAGER_H = FilePropertyManager.getCommandLineString("CommandsManager.h");
+    private final String COMMANDS_MANAGER_HELP = FilePropertyManager.getCommandLineString("CommandsManager.help");
+    private final String HELP_DESCRIPTION = FilePropertyManager.getMessageString("CommandsManager.helpDescription");
+
+    private final String USER_PASSWORD_MESSAGE = "Insert User and Password";
+
     private String name = "";
     private String pass = "";
 
-    private static boolean isGetLink = true;
+    private boolean isGetLink = true;
+    private Options options = new Options();
+    private String[] args;
 
     /**
-     * @param args Constructor take String array and pase to commands
+     * @param args Constructor take String array and parse to commands
      */
     public CommandsManager(String[] args) {
-        Options options = new Options();
+        this.args = args;
+        checkComanLineArgs();
+    }
 
-        options.addOption(FilePropertyManager.getCommandLineString("CommandsManager.l"), true,
-            FilePropertyManager.getCommandLineString("CommandsManager.login"));
-        options.addOption(FilePropertyManager.getCommandLineString("CommandsManager.p"), true,
-            FilePropertyManager.getCommandLineString("CommandsManager.password"));
-        options.addOption(FilePropertyManager.getCommandLineString("CommandsManager.linkProperty"), false,
-            FilePropertyManager.getCommandLineString("CommandsManager.link"));
-        options.addOption(FilePropertyManager.getCommandLineString("CommandsManager.helpSh"), false,
-            FilePropertyManager.getCommandLineString("CommandsManager.help"));
+    /**
+     * Check command line arguments.
+     */
+    public void checkComanLineArgs() {
+        options.addOption(COMMANDS_MANAGER_U, COMMANDS_MANAGER_USER, true, USER_DESCRIPTION);
+        options.addOption(COMMANDS_MANAGER_P, COMMANDS_MANAGER_PASSWORD, true, PASSWORD_DESCRIPTION);
+        options.addOption(COMMANDS_MANAGER_FETCH_F, COMMANDS_MANAGER_FETCH_FILE, false, FETCH_FILE_DESCRIPTION);
+        options.addOption(COMMANDS_MANAGER_H, COMMANDS_MANAGER_HELP, false, HELP_DESCRIPTION);
         CommandLineParser parser = new PosixParser();
         CommandLine cmd;
         try {
             cmd = parser.parse(options, args);
-            if (cmd.hasOption(FilePropertyManager.getCommandLineString("CommandsManager.l")) &&
-                cmd.hasOption(FilePropertyManager.getCommandLineString("CommandsManager.p"))) {
-                setName(cmd.getOptionValue(FilePropertyManager.getCommandLineString("CommandsManager.l")));
-                setPass(cmd.getOptionValue(FilePropertyManager.getCommandLineString("CommandsManager.p")));
-            } else if (cmd.hasOption(FilePropertyManager.getCommandLineString("CommandsManager.linkProperty"))) {
+            if (cmd.hasOption(COMMANDS_MANAGER_U) && cmd.hasOption(COMMANDS_MANAGER_P) || cmd.hasOption(COMMANDS_MANAGER_USER) &&
+                cmd.hasOption(COMMANDS_MANAGER_PASSWORD)) {
+                setName(cmd.getOptionValue(COMMANDS_MANAGER_U));
+                setPass(cmd.getOptionValue(COMMANDS_MANAGER_P));
+            } else if (cmd.hasOption(COMMANDS_MANAGER_FETCH_F)) {
                 isGetLink = false;
-            } else if (cmd.hasOption(FilePropertyManager.getCommandLineString("CommandsManager.helpSh"))) {
+            } else if (cmd.hasOption(COMMANDS_MANAGER_H)) {
                 HelpFormatter formatter = new HelpFormatter();
-                formatter.printHelp(FilePropertyManager.getCommandLineString("CommandsManager.helpSh"),
-                    FilePropertyManager.getCommandLineString("CommandsManager.helpSh"), options,
-                    FilePropertyManager.getCommandLineString("CommandsManager.helpSh"));
+                formatter.printHelp(COMMANDS_MANAGER_H, options);
                 System.exit(0);
             }
         } catch (ParseException e) {
@@ -58,10 +78,12 @@ public class CommandsManager {
 
     public String getName() {
         if (name.equals("")) {
-            name = FilePropertyManager.getPropertyString("commandsManager.login");
+            name = COMMANDS_MANAGER_U;
+        } else if (COMMANDS_MANAGER_USER.equals("")) {
+            FilePropertyManager.setProperty(COMMANDS_MANAGER_USER_KEY, name);
         }
         if (name.equals("")) {
-            LOGGER.info("Insert Login and Password");
+            LOGGER.info(USER_PASSWORD_MESSAGE);
             System.exit(0);
         }
         return name;
@@ -73,10 +95,12 @@ public class CommandsManager {
 
     public String getPass() {
         if (pass.equals("")) {
-            pass = FilePropertyManager.getPropertyString("commandsManager.password");
+            pass = COMMANDS_MANAGER_PASSWORD;
+        } else if (COMMANDS_MANAGER_PASSWORD.equals("")) {
+            FilePropertyManager.setProperty(COMMANDS_MANAGER_PASSWORD_KEY, pass);
         }
         if (pass.equals("")) {
-            LOGGER.info("Insert Login and Password");
+            LOGGER.info(USER_PASSWORD_MESSAGE);
             System.exit(0);
         }
         return pass;
@@ -90,5 +114,4 @@ public class CommandsManager {
 
         return isGetLink;
     }
-
 }
