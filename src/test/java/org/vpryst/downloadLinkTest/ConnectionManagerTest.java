@@ -1,11 +1,11 @@
 package org.vpryst.downloadLinkTest;
 
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertTrue;
+
 import org.testng.annotations.Test;
 import org.vpryst.downloadLink.ConnectionManager;
 import org.vpryst.downloadLink.FilePropertyManager;
-
-import static org.testng.Assert.*;
-import static org.mockito.Mockito.*;
 
 public class ConnectionManagerTest {
     @Test

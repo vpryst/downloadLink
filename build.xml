@@ -15,7 +15,10 @@
 
 	<target name="compile" depends="resolve" description="Compile">
 		<mkdir dir="${build.classes}" />
-		<javac srcdir="${src.main}/java" destdir="${build.classes}">
+		<javac debug="true" debuglevel="source,lines,vars" srcdir="${src.main}/java" destdir="${build.classes}">
+			<classpath refid="default.classpath" />
+		</javac>
+		<javac debug="true" debuglevel="source,lines,vars" srcdir="${src.test}/java" destdir="${build.classes}">
 			<classpath refid="default.classpath" />
 		</javac>
 		<copy todir="${build.classes}" overwrite="false">
@@ -23,6 +26,11 @@
 				<include name="**/*" />
 				<exclude name="**/*.java" />
 			</fileset>
+			<fileset dir="${src.test}/java">
+				<include name="**/*" />
+				<exclude name="**/*.java" />
+			</fileset>
+
 			<fileset dir="${src.main}/resources">
 				<include name="**/*" />
 			</fileset>
@@ -83,25 +91,78 @@
 		</fileset>
 	</path>
 
-
+	<taskdef classpathref="cobertura.classpath" resource="tasks.properties" />
 	<target name="prepare_cobertura" depends="build">
-		<taskdef classpathref="cobertura.classpath" resource="tasks.properties" />
 		<cobertura-instrument todir="${cobertura.instruments}">
-
 			<fileset dir="${build.classes}">
 				<include name="**/*.class" />
-				<exclude name="**/*Test.class" />
 			</fileset>
 		</cobertura-instrument>
 	</target>
 
-	<target name="cobertura" depends="prepare_cobertura" description="create code coverage report">
+	<target name="cobertura" description="create code coverage report">
 		<cobertura-report format="html" destdir="${cobertura.coveragereport}">
-			<fileset dir="${src.main}">
+			<fileset dir="${src.main.java}">
+				<include name="**/*.java" />
+				<exclude name="**/*Stub.java" />
+			</fileset>
+			<fileset dir="${src.test}/java">
 				<include name="**/*.java" />
 				<exclude name="**/*Stub.java" />
 			</fileset>
 		</cobertura-report>
 	</target>
+
+	<path id="cp">
+		<pathelement location="build/classes" />
+		
+		<fileset dir="lib">
+			<include name="*.jar" />
+		</fileset>
+
+	</path>
+
+	<taskdef name="testng" classpathref="cp" classname="org.testng.TestNGAntTask" />
+
+	<target name="test">
+		<testng classpathref="cp" groups="fast">
+			<classfileset dir="${cobertura.instruments}" includes="**/*.class" />
+			<sysproperty key="net.sourceforge.cobertura.datafile" file="cobertura.ser" />
+			<xmlfileset dir="." includes="testng.xml" />
+		</testng>
+	</target>
+
+
+
+	<target name="coberturaT">
+		<cobertura-instrument todir="${cobertura.instruments}">
+			<fileset dir="${build.classes}">
+				<include name="**/*.class" />
+			</fileset>
+		</cobertura-instrument>
+	</target>
+
+	<target name="coverage-test" >
+		<testng classpathref="cp">
+			 <sysproperty key="cob" value=".cobertura.ser" />
+			<classfileset dir="${cobertura.instruments}" includes="**/*.class" /> 
+		</testng>
+	</target>
+
+	<target name="cobertura.reports">
+		<cobertura-report format="html" destdir="${cobertura.coveragereport}">
+			<fileset dir="${src.main.java}">
+				<include name="**/*.java" />
+			</fileset>
+			<fileset dir="${src.test}/java">
+				<include name="**/*.java" />
+			</fileset>
+		</cobertura-report>
+	</target>
+
+
+
+
+
 
 </project>

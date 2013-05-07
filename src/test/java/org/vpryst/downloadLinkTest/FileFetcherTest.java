@@ -9,7 +9,7 @@ import static org.mockito.Mockito.*;
 
 public class FileFetcherTest {
     @Test
-    public void CheckFileExtentionMock() {
+    public void checkFileExtentionMock() {
         ConnectionManager conection = mock(ConnectionManager.class);
         FileFetcher fileFetch = new FileFetcher(conection);
         assertEquals(fileFetch.getFileExtension("application/pdf"), ".pdf");
@@ -17,28 +17,28 @@ public class FileFetcherTest {
     }
 
     @Test(expectedExceptions = java.lang.NullPointerException.class)
-    public void CheckFileDatasaveMock() {
+    public void checkFileDatasaveMock() {
         ConnectionManager conection = mock(ConnectionManager.class);
         FileFetcher fileFetch = new FileFetcher(conection);
         fileFetch.fileDataSave("sdgsdg", "sdfsdfsdfsgs");
     }
 
     @Test
-    public void CheckFileDatasave() {
+    public void checkFileDatasave() {
         ConnectionManager conection = new ConnectionManager("Anonim123", "123456");
         FileFetcher fileFetch = new FileFetcher(conection);
         fileFetch.fileDataSave("http://refcardz.dzone.com/assets/request/refcard/4855?oid=rchom4855&direct=true", "dfgdfg");
     }
     
     @Test
-    public void CheckFileDataLink() {
+    public void checkFileDataLink() {
         ConnectionManager conection = new ConnectionManager("Anonim123", "123456");
         FileFetcher fileFetch = new FileFetcher(conection);
         fileFetch.fileDataLink("http://refcardz.dzone.com/assets/request/refcard/4855?oid=rchom4855&direct=true");
     }
     
     @Test
-    public void CheckFileDatasaveSave() {
+    public void checkFileDatasaveSave() {
         ConnectionManager conection = new ConnectionManager("Anonim123", "123456");
         FileFetcher fileFetch = new FileFetcher(conection);
         fileFetch.fileDataSave("http://refcardz.dzone.com/assets/request/refcard/131201?oid=rchom131201&direct=true", "dfgdfg");
