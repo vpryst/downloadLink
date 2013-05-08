@@ -1,10 +1,10 @@
 package org.vpryst.downloadLinkTest;
 
-import org.testng.annotations.Test;
+import org.junit.Test;
 import org.vpryst.downloadLink.ConnectionManager;
 import org.vpryst.downloadLink.FileFetcher;
 
-import static org.testng.Assert.*;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 public class FileFetcherTest {
@@ -16,7 +16,7 @@ public class FileFetcherTest {
         assertEquals(fileFetch.getFileExtension("sdgdfdgdfg"), ".html");
     }
 
-    @Test(expectedExceptions = java.lang.NullPointerException.class)
+    @Test(expected = java.lang.NullPointerException.class)
     public void checkFileDatasaveMock() {
         ConnectionManager conection = mock(ConnectionManager.class);
         FileFetcher fileFetch = new FileFetcher(conection);
@@ -29,14 +29,14 @@ public class FileFetcherTest {
         FileFetcher fileFetch = new FileFetcher(conection);
         fileFetch.fileDataSave("http://refcardz.dzone.com/assets/request/refcard/4855?oid=rchom4855&direct=true", "dfgdfg");
     }
-    
+
     @Test
     public void checkFileDataLink() {
         ConnectionManager conection = new ConnectionManager("Anonim123", "123456");
         FileFetcher fileFetch = new FileFetcher(conection);
         fileFetch.fileDataLink("http://refcardz.dzone.com/assets/request/refcard/4855?oid=rchom4855&direct=true");
     }
-    
+
     @Test
     public void checkFileDatasaveSave() {
         ConnectionManager conection = new ConnectionManager("Anonim123", "123456");

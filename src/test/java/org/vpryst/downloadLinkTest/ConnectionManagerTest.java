@@ -1,9 +1,9 @@
 package org.vpryst.downloadLinkTest;
 
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
-import org.testng.annotations.Test;
+import org.junit.Test;
 import org.vpryst.downloadLink.ConnectionManager;
 import org.vpryst.downloadLink.FilePropertyManager;
 
@@ -27,13 +27,13 @@ public class ConnectionManagerTest {
 
     }
 
-    @Test(expectedExceptions = java.lang.NullPointerException.class)
+    @Test(expected = java.lang.NullPointerException.class)
     public void getConnectionTestNull() {
         ConnectionManager manager = new ConnectionManager();
         assertFalse(manager.autentificate("fgjdghjgdhfgjdghjfghjhdfghghj"));
     }
 
-    @Test(expectedExceptions = java.lang.NullPointerException.class)
+    @Test(expected = java.lang.NullPointerException.class)
     public void getConnectionTestNullClose() {
         ConnectionManager manager = new ConnectionManager();
         manager.closeHttpClien();

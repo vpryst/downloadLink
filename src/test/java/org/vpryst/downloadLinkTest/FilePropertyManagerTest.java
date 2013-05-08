@@ -1,8 +1,9 @@
 package org.vpryst.downloadLinkTest;
 
-import org.testng.annotations.Test;
+
+import org.junit.Test;
 import org.vpryst.downloadLink.FilePropertyManager;
-import static org.testng.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 
 public class FilePropertyManagerTest {
   @Test

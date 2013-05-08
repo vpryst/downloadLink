@@ -1,9 +1,9 @@
 package org.vpryst.downloadLinkTest;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
-import org.testng.annotations.Test;
+import org.junit.Test;
 import org.vpryst.downloadLink.CommandsManager;
 
 /**
@@ -11,7 +11,7 @@ import org.vpryst.downloadLink.CommandsManager;
  */
 public class CommandsManagerTest {
 
-    @Test 
+    @Test
     public void commandsManagerConstructor() {
         String[] args = null;
         CommandsManager command = new CommandsManager(args);
@@ -25,6 +25,7 @@ public class CommandsManagerTest {
         String[] args1 = {"-u"};
         CommandsManager command = new CommandsManager(args1);
     }
+
     @Test
     public void commandsManagerConstructorPassword() {
         String[] args1 = {"-p"};
@@ -43,7 +44,7 @@ public class CommandsManagerTest {
 
     @Test
     public void commandsManagerConstructorLink() {
-        String[] args1 ={"-f"};
+        String[] args1 = {"-f"};
         CommandsManager command = new CommandsManager(args1);
         assertFalse(command.isRequiredFetch());
     }
