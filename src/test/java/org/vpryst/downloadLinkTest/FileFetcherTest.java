@@ -22,7 +22,7 @@ public class FileFetcherTest {
         FileFetcher fileFetch = new FileFetcher(conection);
         fileFetch.fileDataSave("sdgsdg", "sdfsdfsdfsgs");
     }
-
+    
     @Test
     public void checkFileDatasave() {
         ConnectionManager conection = new ConnectionManager("Anonim123", "123456");
