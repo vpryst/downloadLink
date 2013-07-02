@@ -33,7 +33,7 @@ public class ConnectionManager implements ConstVariables {
     /**
      * Tag input Id
      */
-    private final String PASSWORD_FIELD_NAME = "pass";
+    private final String PASSWORD_FIELD_NAME = "pass";tyutyutyuy
 
     /**
      * Hidden tag input id
