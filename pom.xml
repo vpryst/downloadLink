@@ -134,6 +134,16 @@
 					</reportPlugins>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>2.2.1</version>
+				<configuration>
+					<outputDirectory>target/source-jar/</outputDirectory>
+					<finalName>download</finalName>
+					<attach>false</attach>
+				</configuration>
+			</plugin>
 		</plugins>
 		<pluginManagement>
 			<plugins>
