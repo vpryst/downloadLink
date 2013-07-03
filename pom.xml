@@ -108,10 +108,10 @@
 						</goals>
 					</execution>
 				</executions>
-				<configuration>
-					<!-- <failsOnError>true</failsOnError> -->
-					<maxAllowedViolations>300</maxAllowedViolations>
-				</configuration>
+<!-- 				<configuration> -->
+<!-- 					<failsOnError>true</failsOnError> -->
+<!-- 					<maxAllowedViolations>300</maxAllowedViolations> -->
+<!-- 				</configuration> -->
 			</plugin>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
@@ -152,11 +152,11 @@
 						<goals>
 							<goal>check</goal>
 						</goals>
-						<configuration>
-							<effort>Max</effort>
-							<threshold>Low</threshold>
-							<xmlOutput>true</xmlOutput>
-						</configuration>
+<!-- 						<configuration> -->
+<!-- 							<effort>Max</effort> -->
+<!-- 							<threshold>Low</threshold> -->
+<!-- 							<xmlOutput>true</xmlOutput> -->
+<!-- 						</configuration> -->
 					</execution>
 				</executions>
 			</plugin>
@@ -164,14 +164,14 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-pmd-plugin</artifactId>
 				<version>3.0.1</version>
-				<executions>
-					<execution>
-						<phase>verify</phase>
-						<goals>
-							<goal>check</goal>
-						</goals>
-					</execution>
-				</executions>
+<!-- 				<executions> -->
+<!-- 					<execution> -->
+<!-- 						<phase>verify</phase> -->
+<!-- 						<goals> -->
+<!-- 							<goal>check</goal> -->
+<!-- 						</goals> -->
+<!-- 					</execution> -->
+<!-- 				</executions> -->
 			</plugin>
 		</plugins>
 	</build>
