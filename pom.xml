@@ -108,10 +108,10 @@
 <!-- 						</goals> -->
 <!-- 					</execution> -->
 <!-- 				</executions> -->
-<!-- 				<configuration> -->
+				<configuration>
 <!-- 					<failsOnError>true</failsOnError> -->
-<!-- 					<maxAllowedViolations>300</maxAllowedViolations> -->
-<!-- 				</configuration> -->
+					<maxAllowedViolations>300</maxAllowedViolations>
+				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
