@@ -5,6 +5,7 @@
 	<artifactId>downloadlink</artifactId>
 	<version>0.0.1</version>
 	<url>http://maven.apache.org</url>
+	
 	<properties>
 		<checkstyle.version>2.10</checkstyle.version>
 		<javadoc.version>2.9</javadoc.version>
@@ -12,6 +13,7 @@
 		<findbugs.version>2.5.2</findbugs.version>
 		<pmd.version>3.0.1</pmd.version>
 	</properties>
+	
 	<dependencies>
 		<dependency>
 			<groupId>org.codehaus.mojo</groupId>
@@ -155,7 +157,7 @@
 				</configuration>
 				<executions>
 					<execution>
-						<phase>install</phase>
+						<phase>package</phase>
 						<goals>
 							<goal>cobertura</goal>
 							<goal>check</goal>
