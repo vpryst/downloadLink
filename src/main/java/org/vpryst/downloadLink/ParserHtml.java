@@ -12,33 +12,33 @@ import org.jsoup.select.Elements;
 
 public class ParserHtml implements ConstVariables {
 
-    private final Logger LOGGER = Logger.getLogger(ParserHtml.class);
+    private final static Logger LOGGER = Logger.getLogger(ParserHtml.class);
 
     /**
      * Class of tag "tr"
      */
-    private final String CLASS_TR = "td-download";
+    private final static String CLASS_TR = "td-download";
     /**
      * Name of tag
      */
-    private final String TAG = "a";
+    private final static String TAG = "a";
     /**
      * Parameter to take name of file
      */
-    private final String FILE_LINK = "href";
+    private final static String FILE_LINK = "href";
     /**
      * Parameter to take link
      */
-    private final String FILE_NAME = "onclick";
+    private final static String FILE_NAME = "onclick";
     /**
      * for take link
      */
-    private final String INDEX_OF_FROM = "\",\"";
+    private final static String INDEX_OF_FROM = "\",\"";
     /**
      * count symbols for substring
      */
-    private final int COUNT_FROM = 3;
-    private final int COUNT_TO = 3;
+    private final static int COUNT_FROM = 3;
+    private final static int COUNT_TO = 3;
     private Document doc = null;
     private Map<String, String> linkMap = new HashMap<String, String>();
     private String url = "";
