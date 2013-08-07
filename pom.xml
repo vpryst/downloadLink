@@ -13,6 +13,12 @@
 		<findbugs.version>2.5.2</findbugs.version>
 		<pmd.version>3.0.1</pmd.version>
 
+		<sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
+		<sonar.surefire.reportsPath>${project.build.directory}/surefire-reports</sonar.surefire.reportsPath>
+		<sonar.cobertura.reportPath>${project.build.directory}/site/cobertura/coverage.xml</sonar.cobertura.reportPath>
+		<sonar.language>java</sonar.language>
+		<!-- Tells Sonar to use JaCoCo as the code coverage tool -->
+		<sonar.java.coveragePlugin>cobertura</sonar.java.coveragePlugin>
 	</properties>
 
 	<dependencies>
