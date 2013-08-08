@@ -19,9 +19,11 @@ public class CommandsManager {
     private final String COMMANDS_MANAGER_PASSWORD_KEY = "CommandsManager.password";
     private final String COMMANDS_MANAGER_U = FilePropertyManager.getCommandLineString("CommandsManager.u");
     private final String COMMANDS_MANAGER_USER = FilePropertyManager.getCommandLineString(COMMANDS_MANAGER_USER_KEY);
+    private final String COMMANDS_MANAGER_USER_NAME = FilePropertyManager.getPropertyString(COMMANDS_MANAGER_USER_KEY);
     private final String USER_DESCRIPTION = FilePropertyManager.getMessageString("CommandsManager.userDescription");
     private final String COMMANDS_MANAGER_P = FilePropertyManager.getCommandLineString("CommandsManager.p");
     private final String COMMANDS_MANAGER_PASSWORD = FilePropertyManager.getCommandLineString(COMMANDS_MANAGER_PASSWORD_KEY);
+    private final String COMMANDS_MANAGER_PASSWORD_NAME = FilePropertyManager.getPropertyString(COMMANDS_MANAGER_PASSWORD_KEY);
     private final String PASSWORD_DESCRIPTION = FilePropertyManager.getMessageString("CommandsManager.passwordDescription");
     private final String COMMANDS_MANAGER_FETCH_F = FilePropertyManager.getCommandLineString("CommandsManager.fetchF");
     private final String COMMANDS_MANAGER_FETCH_FILE = FilePropertyManager.getCommandLineString("CommandsManager.fetchFile");
@@ -72,14 +74,14 @@ public class CommandsManager {
             }
         } catch (ParseException e) {
             // e.printStackTrace();
-            LOGGER.warn(e);
+            LOGGER.error(e);
         }
     }
 
     public String getName() {
         if (name.equals("")) {
-            name = COMMANDS_MANAGER_U;
-        } else if (COMMANDS_MANAGER_USER.equals("")) {
+            name = COMMANDS_MANAGER_USER_NAME;
+        } else if (COMMANDS_MANAGER_USER_NAME.equals("")) {
             FilePropertyManager.setProperty(COMMANDS_MANAGER_USER_KEY, name);
         }
         if (name.equals("")) {
@@ -95,8 +97,8 @@ public class CommandsManager {
 
     public String getPass() {
         if (pass.equals("")) {
-            pass = COMMANDS_MANAGER_PASSWORD;
-        } else if (COMMANDS_MANAGER_PASSWORD.equals("")) {
+            pass = COMMANDS_MANAGER_PASSWORD_NAME;
+        } else if (COMMANDS_MANAGER_PASSWORD_NAME.equals("")) {
             FilePropertyManager.setProperty(COMMANDS_MANAGER_PASSWORD_KEY, pass);
         }
         if (pass.equals("")) {

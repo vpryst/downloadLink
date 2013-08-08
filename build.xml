@@ -4,7 +4,23 @@
 	<property file="build.properties" />
 
 	<taskdef resource="checkstyletask.properties" classpath="${checkstyle.jar}" />
-
+	<path id="cp.all.path">
+		<fileset dir="${lib.dir}">
+			<include name="**/*.jar" />
+		</fileset>
+		<fileset dir="${src.main}/java">
+			<include name="**/*.java" />
+		</fileset>
+		<fileset dir="${src.main}/resources">
+			<include name="**/*" />
+		</fileset>
+		<fileset dir="${src.test}/java">
+			<include name="**/*.java" />
+		</fileset>
+		<fileset dir="${build.classes}">
+			<include name="**/*.class" />
+		</fileset>
+	</path>
 
 	<target name="resolve" description="Resolve and Retrieve with ivy">
 		<ivy:settings file="ivysettings.xml" />
@@ -15,14 +31,22 @@
 
 	<target name="compile" depends="resolve" description="Compile">
 		<mkdir dir="${build.classes}" />
-		<javac srcdir="${src.main}/java" destdir="${build.classes}">
-			<classpath refid="default.classpath" />
+		<javac debug="true" debuglevel="source,lines,vars" srcdir="${src.main}/java" destdir="${build.classes}">
+			<classpath refid="cp.all.path" />
+		</javac>
+		<javac debug="true" debuglevel="source,lines,vars" srcdir="${src.test}/java" destdir="${build.classes}">
+			<classpath refid="cp.all.path" />
 		</javac>
 		<copy todir="${build.classes}" overwrite="false">
 			<fileset dir="${src.main}/java">
 				<include name="**/*" />
 				<exclude name="**/*.java" />
 			</fileset>
+			<!--fileset dir="${src.test}/java">
+				<include name="**/*" />
+				<exclude name="**/*.java" />
+			</fileset-->
+
 			<fileset dir="${src.main}/resources">
 				<include name="**/*" />
 			</fileset>
@@ -83,11 +107,62 @@
 		</fileset>
 	</path>
 
-
+	<taskdef classpathref="cobertura.classpath" resource="tasks.properties" />
 	<target name="prepare_cobertura" depends="build">
-		<taskdef classpathref="cobertura.classpath" resource="tasks.properties" />
 		<cobertura-instrument todir="${cobertura.instruments}">
+			<fileset dir="${build.classes}">
+				<include name="**/*.class" />
+			</fileset>
+		</cobertura-instrument>
+	</target>
 
+	<target name="cobertura" description="create code coverage report">
+		<cobertura-report format="html" destdir="${cobertura.coveragereport}">
+			<fileset dir="${src.main.java}">
+				<include name="**/*.java" />
+				<exclude name="**/*Stub.java" />
+			</fileset>
+			<fileset dir="${src.test}/java">
+				<include name="**/*.java" />
+				<exclude name="**/*Stub.java" />
+			</fileset>
+		</cobertura-report>
+	</target>
+
+	<path id="cp">
+
+
+		<!--fileset dir="${build.classes}">
+			<include name="**/*.class" />
+			<exclude name="**/*Test.class" />
+		</fileset-->
+		<fileset dir="lib">
+			<include name="**/*.jar" />
+		</fileset>
+		<!--fileset dir="${build}/cob">
+			<include name="**/*.class" />
+		</fileset>
+		<fileset dir="${build}/cob">
+			<include name="**/*.class" />
+		</fileset-->
+
+	</path>
+
+	<!--taskdef name="testng" classpathref="cp" classname="org.testng.TestNGAntTask" /-->
+
+	<target name="test">
+		<testng classpathref="cp" groups="fast">
+			<classfileset dir="${cobertura.instruments}" includes="**/*.class" />
+			<sysproperty key="net.sourceforge.cobertura.datafile" file="cobertura.ser" />
+			<xmlfileset dir="." includes="testng.xml" />
+		</testng>
+	</target>
+
+
+
+	<target name="coberturaT">
+		<cobertura-instrument todir="${cobertura.instruments}">
+			<classpath refid="cp.all.path"/>
 			<fileset dir="${build.classes}">
 				<include name="**/*.class" />
 				<exclude name="**/*Test.class" />
@@ -95,13 +170,56 @@
 		</cobertura-instrument>
 	</target>
 
-	<target name="cobertura" depends="prepare_cobertura" description="create code coverage report">
+	<target name="coverage-test">
+		<junit fork="yes" dir="./" failureProperty="test.failed">
+			<!--
+		        Specify the name of the coverage data file to use.
+		        The value specified below is the default.
+		    -->
+			<!--sysproperty key="net.sourceforge.cobertura.datafile" file="cobertura.ser" /-->
+
+			<!--
+		        Note the classpath order: instrumented classes are before the
+		        original (uninstrumented) classes.  This is important.
+		    -->
+			<classpath refid="cp" />
+			<classpath location="${cobertura.instruments}" />
+			<classpath location="${build.classes}" />
+
+			<!--
+		        The instrumented classes reference classes used by the
+		        Cobertura runtime, so Cobertura and its dependencies
+		        must be on your classpath.
+		    -->
+
+
+
+			<!--test name="org.vpryst.downloadLinkTest.ConnectionManagerTest" haltonfailure="no" outfile="result">
+				<formatter type="plain" />
+				<formatter type="xml" />
+			</test-->
+			<batchtest todir="cobertura/reports/" fork="yes">
+				<fileset dir="src/test/java">
+					<include name="**/*.java" />
+				</fileset>
+			</batchtest>
+		</junit>
+	</target>
+
+	<target name="cobertura.reports">
 		<cobertura-report format="html" destdir="${cobertura.coveragereport}">
-			<fileset dir="${src.main}">
+			<fileset dir="${src.main.java}">
 				<include name="**/*.java" />
-				<exclude name="**/*Stub.java" />
+			</fileset>
+			<fileset dir="${src.test}/java">
+				<include name="**/*.java" />
 			</fileset>
 		</cobertura-report>
 	</target>
+
+
+
+
+
 
 </project>
