@@ -13,3 +13,8 @@ Commands:
 
 Documentation:
 =============
+
+
+Maven pom file:
+=============
+For use all metricks. Use branch 'useJunit'
