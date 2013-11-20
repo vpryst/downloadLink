@@ -16,7 +16,8 @@ public class ConnectionManagerTest {
 
     @Test
     public void connectionTestWithParam() {
-        ConnectionManager manager = new ConnectionManager("Anonim123", "123456", 12);
+        //ConnectionManager manager = new ConnectionManager("Anonim123", "123456", 12);
+        ConnectionManager manager = new ConnectionManager("Anonim", "123456", 12);
         assertTrue(manager.autentificate(FilePropertyManager.getPropertyString("WriteFile.link")));
     }
 
