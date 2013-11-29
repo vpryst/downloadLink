@@ -159,31 +159,32 @@
 					</execution>
 				</executions>
 				<configuration>
+					<haltOnFailure>true</haltOnFailure>
 					<rules>
-					  <rule>
-						<element>CLASS</element>
-						<excludes>
-						  <exclude>*Test</exclude>
-						  <exclude>org.vpryst.downloadLink.Main</exclude>
-						</excludes>
-						<limits>
-						  <limit>
-							<counter>CLASS</counter>
-							<value>COVEREDRATIO</value>
-							<minimum>${jacoco.class.coverageratio.min}</minimum>
-						  </limit>
-						  <limit>
-							<counter>METHOD</counter>
-							<value>COVEREDRATIO</value>
-							<minimum>${jacoco.method.coverageratio.min}</minimum>
-						  </limit>
-						  <limit>
-							<counter>LINE</counter>
-							<value>COVEREDRATIO</value>
-							<minimum>${jacoco.line.coverageratio.min}</minimum>
-						  </limit>
-						</limits>
-					  </rule>
+						<rule>
+							<element>CLASS</element>
+							<excludes>
+								<exclude>*Test</exclude>
+								<exclude>org.vpryst.downloadLink.Main</exclude>
+							</excludes>
+							<limits>
+								<limit>
+									<counter>CLASS</counter>
+									<value>COVEREDRATIO</value>
+									<minimum>${jacoco.class.coverageratio.min}</minimum>
+								</limit>
+								<limit>
+									<counter>METHOD</counter>
+									<value>COVEREDRATIO</value>
+									<minimum>${jacoco.method.coverageratio.min}</minimum>
+								</limit>
+								<limit>
+									<counter>LINE</counter>
+									<value>COVEREDRATIO</value>
+									<minimum>${jacoco.line.coverageratio.min}</minimum>
+								</limit>
+							</limits>
+						</rule>
 					</rules>
 				</configuration>
 			</plugin>
@@ -195,9 +196,9 @@
 					<findbugsXmlOutput>true</findbugsXmlOutput>
 					<findbugsXmlWithMessages>true</findbugsXmlWithMessages>
 					<xmlOutput>true</xmlOutput>
-					
+
 					<threshold>${findBugs.threshold}</threshold>
-                    <effort>${findBugs.effort}</effort>
+					<effort>${findBugs.effort}</effort>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -220,20 +221,20 @@
 				<version>0.1</version>
 			</plugin>
 			<plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <version>${javadoc.version}</version>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-source-plugin</artifactId>
-                <version>2.2.1</version>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-checkstyle-plugin</artifactId>
-                <version>${checkstyle.version}</version>
-            </plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>${javadoc.version}</version>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>2.2.1</version>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-checkstyle-plugin</artifactId>
+				<version>${checkstyle.version}</version>
+			</plugin>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>findbugs-maven-plugin</artifactId>
