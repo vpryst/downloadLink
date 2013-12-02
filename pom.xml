@@ -152,10 +152,8 @@
 				<version>${jacoco.version}</version>
 				<executions>
 					<execution>
-						<phase>package</phase>
 						<goals>
-							<goal>report</goal>
-							<goal>check</goal>
+							<goal>prepare-agent</goal>
 						</goals>
 					</execution>
 				</executions>
@@ -211,7 +209,7 @@
 				<artifactId>maven-site-plugin</artifactId>
 				<version>3.3</version>
 			</plugin>
-            <!-- Surefire plugin -->
+			<!-- Surefire plugin -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
@@ -224,7 +222,7 @@
 					</dependency>
 				</dependencies>
 				<configuration>
-				    <testFailureIgnore>${test.failure.ignore}</testFailureIgnore>
+					<testFailureIgnore>${test.failure.ignore}</testFailureIgnore>
 				</configuration>
 			</plugin>
 		</plugins>
